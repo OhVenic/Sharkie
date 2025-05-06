@@ -14,17 +14,18 @@ IMAGES_WALKING = [
         super().loadImage("img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png");
         this.x = 250 + Math.random() * 500; // Random x position
         this.loadImages(this.IMAGES_WALKING);
+        this.speed = 0.05 + Math.random() * 0.15; // Random speed between 0.05 and 0.15
         this.animate();
   }
 
 animate() {
 
 setInterval( () => {
+  this.moveLeft(); // Call the moveLeft method to move the Pufferfish
      let i = this.currentImage % this.IMAGES_WALKING.length; // Ensure the index is within bounds
      let path = this.IMAGES_WALKING[i];
      this.img = this.imageCache[path];
      this.currentImage++;
-     this.x -= 3
 }, 150);
 }
 }

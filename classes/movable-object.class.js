@@ -6,6 +6,7 @@ class MovableObject {
     width = 150;
     imageCache = []
     currentImage = 0; // Index of the current image in the array
+    speed = 0.05; // Speed of the object
 
     // loadImage("img/test.png");
     loadImage(path) {
@@ -26,6 +27,8 @@ class MovableObject {
     }
 
     moveLeft() {
-        console.log("Moving left");
+        setInterval(() => {
+            this.x -= this.speed; // Move the object to the left
+        }, 1000 / 15); // Move the object to the left at 5 pixels per frame
     }
 }
