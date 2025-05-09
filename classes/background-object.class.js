@@ -8,4 +8,4 @@ class BackgroundObject extends MovableObject {
         this.y = 480 - this.height; // Set the y position to the bottom of the canvas
         this.x = x;
     }
-}
+}  
