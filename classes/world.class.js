@@ -42,17 +42,44 @@ class World {
     });
   }
 
-  addToMap(mo) {
-    this.ctx.save();
+addToMap(mo) {
+  this.ctx.save();
 
+  const isCharacter = mo instanceof Character;
+  const moveUp = this.keyboard.UP;
+  const moveDown = this.keyboard.DOWN;
+  const shouldRotate = isCharacter && (moveUp || moveDown);
+
+  if (shouldRotate) {
+    let angle = moveUp ? -15 : 15;
+    if (mo.otherDirection) angle = -angle;
+    const rad = angle * Math.PI / 180;
+
+    const centerX = mo.x + mo.width / 2;
+    const centerY = mo.y + mo.height / 2;
+
+    this.ctx.translate(centerX, centerY);
+    this.ctx.rotate(rad);
+
+    if (mo.otherDirection) this.ctx.scale(-1, 1);
+
+    this.ctx.drawImage(
+      mo.img,
+      -mo.width / 2,
+      -mo.height / 2,
+      mo.width,
+      mo.height
+    );
+  } else {
     if (mo.otherDirection) {
-      this.ctx.translate(mo.x + mo.width, 0); // Ursprung verschieben
-      this.ctx.scale(-1, 1); // Horizontal spiegeln
-      this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height); // Zeichne relativ zum neuen Ursprung
+      this.ctx.translate(mo.x + mo.width, 0);
+      this.ctx.scale(-1, 1);
+      this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
     } else {
       this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
     }
-
-    this.ctx.restore();
   }
+
+  this.ctx.restore();
+}
 }

@@ -1,7 +1,7 @@
 class Character extends MovableObject {
-  height = 250; // Set the height of the character
-  width = 280; // Set the width of the character
-  speed = 10;
+  height = 200; // Set the height of the character
+  width = 220; // Set the width of the character
+  speed = 12.5;
   world;
   IMAGES_WALKING = [
     "img/1.Sharkie/3.Swim/1.png",
@@ -26,7 +26,7 @@ class Character extends MovableObject {
         this.otherDirection = false; // Set the direction to right
       }
 
-      if (this.world.keyboard.LEFT && this.x > 0) {
+      if (this.world.keyboard.LEFT && this.x > -600) {
         this.x -= this.speed; // Move the character to the left
         this.otherDirection = true; // Set the direction to left
       }
@@ -40,7 +40,7 @@ class Character extends MovableObject {
       ) {
         this.y += this.speed; // Move the character down
       }
-      this.world.camera_x = -this.x;
+      this.world.camera_x = -this.x + 50;
     }, 1000 / 25);
 
     setInterval(() => {
@@ -55,6 +55,4 @@ class Character extends MovableObject {
       }
     }, 100);
   }
-
-  jump() {}
 }
