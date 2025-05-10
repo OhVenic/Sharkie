@@ -1,59 +1,58 @@
 class World {
-     character = new Character();
-     enemies = [
-        new Pufferfish(),
-        new Pufferfish(), 
-        new Pufferfish(),  
-    ];
-    light = [
-        new Light(),
-    ]
-    backgroundObjects = [
-        new BackgroundObject("img/3. Background/Layers/5. Water/L1.png", 0),
-        new BackgroundObject("img/3. Background/Layers/3.Fondo 1/L1.png", 0),
-        new BackgroundObject("img/3. Background/Layers/4.Fondo 2/L1.png", 0),
-        new BackgroundObject("img/3. Background/Layers/2. Floor/L1.png", 0),
-    ]
+  character = new Character();
+  level = level1;
+  ctx;
+  canvas;
+  keyboard;
+  camera_x = 0;
 
-    ctx;
-    canvas;
-    keyboard;
+  constructor(canvas, keyboard) {
+    this.ctx = canvas.getContext("2d");
+    this.canvas = canvas;
+    this.keyboard = keyboard;
+    this.draw();
+    this.setWorld();
+  }
 
-constructor(canvas, keyboard) {
-this.ctx = canvas.getContext("2d");
-this.canvas = canvas;
-this.keyboard = keyboard;
-this.draw();
-this.setWorld();
-}
-
-setWorld() {
+  setWorld() {
     this.character.world = this;
-}
+  }
 
-    draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
+  draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
 
-        this.addObjectsToMap(this.backgroundObjects);
-        this.addToMap(this.character);       
-        this.addObjectsToMap(this.enemies);
-        this.addObjectsToMap(this.light);
-        
+    this.ctx.translate(this.camera_x, 0);
 
-        // Draw() wird immer wieder aufgerufen, um die Animation zu starten
-        let self = this;
-        requestAnimationFrame(function() {
-            self.draw();
-        })
+    this.addObjectsToMap(this.level.backgroundObjects);
+    this.addToMap(this.character);
+    this.addObjectsToMap(this.level.enemies);
+
+    this.ctx.translate(-this.camera_x, 0);
+
+    // Draw() wird immer wieder aufgerufen, um die Animation zu starten
+    let self = this;
+    requestAnimationFrame(function () {
+      self.draw();
+    });
+  }
+
+  addObjectsToMap(objects) {
+    objects.forEach((o) => {
+      this.addToMap(o);
+    });
+  }
+
+  addToMap(mo) {
+    this.ctx.save();
+
+    if (mo.otherDirection) {
+      this.ctx.translate(mo.x + mo.width, 0); // Ursprung verschieben
+      this.ctx.scale(-1, 1); // Horizontal spiegeln
+      this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height); // Zeichne relativ zum neuen Ursprung
+    } else {
+      this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
     }
 
-    addObjectsToMap(objects) {
-        objects.forEach(o => {
-            this.addToMap(o);
-        });
-    }
-
-    addToMap(mo) {
-        this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
-    }
+    this.ctx.restore();
+  }
 }
