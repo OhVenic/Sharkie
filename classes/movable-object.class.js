@@ -23,6 +23,20 @@ class MovableObject {
     });
   }
 
+  draw(ctx) {
+  ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+  }
+
+  drawFrame(ctx) {
+    if(this instanceof Character || this instanceof Pufferfish || this instanceof Endboss) {
+    ctx.beginPath();
+    ctx.lineWidth = "3";
+    ctx.strokeStyle = "blue";
+    ctx.rect(this.x, this.y, this.width, this.height);
+    ctx.stroke();
+    }
+  }
+
   playAnimation(images) {
     let i = this.currentImage % images.length; // Ensure the index is within bounds
     let path = images[i];
