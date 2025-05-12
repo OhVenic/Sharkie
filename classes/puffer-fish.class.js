@@ -9,13 +9,19 @@ class Pufferfish extends MovableObject {
     "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim4.png",
     "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim5.png",
   ];
+    offset = {
+    top: 90,
+    bottom: 110,
+    left: 110,
+    right: 120,
+  }
 
   constructor() {
     super().loadImage(
       "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png"
     );
     this.x = 250 + Math.random() * 500; // Random x position
-    this.speed = 0.05 + Math.random() * 0.15; // Random speed between 0.05 and 0.15
+    this.speed = 0.05 + Math.random() * 0.1; // Random speed between 0.05 and 0.15
     this.loadImages(this.IMAGES_WALKING);
     this.animate();
   }

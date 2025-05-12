@@ -18,6 +18,12 @@ class Endboss extends MovableObject {
         "img/2.Enemy/3 Final Enemy/2.floating/12.png",
         "img/2.Enemy/3 Final Enemy/2.floating/13.png",
     ];
+      offset = {
+    top: 50,
+    bottom: 50,
+    left: 50,
+    right: 50,
+  }
     
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
