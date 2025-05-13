@@ -5,6 +5,7 @@ class World {
   canvas;
   keyboard;
   camera_x = 0;
+  statusBar = new StatusBar();
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -21,20 +22,24 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
-      this.level.enemies.forEach( (enemy) => {
-        if (this.character.isColliding(enemy) ) {
-          console.log("Collision detected on !");
+      this.level.enemies.forEach((enemy) => {
+        if (this.character.isColliding(enemy)) {
+          this.character.hit();
         }
-      })
-    }, 1000)
+        console.log(`Character life: ${this.character.life}`);
+        this.statusBar.setPercentage(this.character.life);
+      });
+    }, 500);
   }
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
-
     this.ctx.translate(this.camera_x, 0);
-
     this.addObjectsToMap(this.level.backgroundObjects);
+    this.ctx.translate(-this.camera_x, 0);
+    // SPACE FOR FIXED OBJECTS
+    this.addToMap(this.statusBar);
+    this.ctx.translate(this.camera_x, 0);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
 
@@ -53,36 +58,37 @@ class World {
     });
   }
 
-addToMap(mo) {
-  this.ctx.save();
-  const isCharacter = mo instanceof Character;
-  const moveUp = this.keyboard.UP;
-  const moveDown = this.keyboard.DOWN;
-  const shouldRotate = isCharacter && (moveUp || moveDown);
-  mo.drawFrame(this.ctx);
+  addToMap(mo) {
+    this.ctx.save();
+    const isCharacter = mo instanceof Character;
+    const moveUp = this.keyboard.UP;
+    const moveDown = this.keyboard.DOWN;
+    const shouldRotate = isCharacter && (moveUp || moveDown);
+    mo.drawFrame(this.ctx);
 
-  if (shouldRotate) {
-  this.rotateCharacter(mo);
-  } else {
-    if (mo.otherDirection) {
-     this.flipImage(mo);
+    if (shouldRotate) {
+      this.rotateCharacter(mo);
     } else {
-     mo.draw(this.ctx);
-    }}
-  this.ctx.restore();
-}
+      if (mo.otherDirection) {
+        this.flipImage(mo);
+      } else {
+        mo.draw(this.ctx);
+      }
+    }
+    this.ctx.restore();
+  }
 
-flipImage(mo) {
-   this.ctx.translate(mo.x + mo.width, 0);
-      this.ctx.scale(-1, 1);
-      this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
-}
+  flipImage(mo) {
+    this.ctx.translate(mo.x + mo.width, 0);
+    this.ctx.scale(-1, 1);
+    this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
+  }
 
-rotateCharacter(mo) {
+  rotateCharacter(mo) {
     let angle = this.keyboard.UP ? -15 : 15;
     if (mo.otherDirection) angle = -angle;
-    const rad = angle * Math.PI / 180;
- 
+    const rad = (angle * Math.PI) / 180;
+
     const centerX = mo.x + mo.width / 2;
     const centerY = mo.y + mo.height / 2;
 
@@ -91,7 +97,12 @@ rotateCharacter(mo) {
 
     if (mo.otherDirection) this.ctx.scale(-1, 1);
 
-    this.ctx.drawImage(mo.img, -mo.width / 2, -mo.height / 2, mo.width, mo.height);
+    this.ctx.drawImage(
+      mo.img,
+      -mo.width / 2,
+      -mo.height / 2,
+      mo.width,
+      mo.height
+    );
+  }
 }
-}
-
