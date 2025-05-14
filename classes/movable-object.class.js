@@ -3,6 +3,7 @@ class MovableObject extends DrawableObject {
   otherDirection = false;
   life = 100;
   lastHit = 0;
+  speedx = 20;
 
   playAnimation(images) {
     let i = this.currentImage % images.length; // Ensure the index is within bounds
@@ -14,14 +15,16 @@ class MovableObject extends DrawableObject {
   moveRight() {
     setInterval(() => {
       this.x += this.speed; // Move the object to the left
-    }, 1000 / 15); // Move the object to the left at 5 pixels per frame
+    }, 1000 / 60); // Move the object to the left at 5 pixels per frame
   }
 
-  moveLeft() {
-    setInterval(() => {
-      this.x -= this.speed; // Move the object to the left
-    }, 1000 / 15); // Move the object to the left at 5 pixels per frame
-  }
+ moveLeft() {
+  if (this.leftInterval) return; // schon aktiv? dann abbrechen
+
+  this.leftInterval = setInterval(() => {
+    this.x -= this.speed;
+  }, 1000 / 60);
+}
 
   isColliding(mo) {
     return (
