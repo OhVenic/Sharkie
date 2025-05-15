@@ -26,9 +26,19 @@ class World {
 
   addEnemies() {
     this.level.enemies.push(
-      new Pufferfish(this),
-      new Pufferfish(this),
-      new Pufferfish(this),
+      new PufferFishGreen(this),
+      new PufferFishGreen(this),
+      new PufferFishGreen(this),
+      new PufferFishGreen(this),
+      new PufferFishLightRose(this),
+      new PufferFishLightRose(this),
+      new PufferFishLightRose(this),
+      new PufferFishLightRose(this),
+      new PufferFishPurple(this),
+      new PufferFishPurple(this),
+      new PufferFishPurple(this),
+      new PufferFishPurple(this),
+      new PufferFishPurple(this),
       new Endboss()
     );
   }
@@ -81,6 +91,7 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
+    this.throwableObjects = this.throwableObjects.filter(obj => !obj.markedForDeletion);
     this.addObjectsToMap(this.throwableObjects);
 
     this.ctx.translate(-this.camera_x, 0);

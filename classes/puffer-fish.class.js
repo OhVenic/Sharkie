@@ -6,40 +6,15 @@ class Pufferfish extends MovableObject {
   dead = false;
 
   IMAGES_WALKING = [
-    "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim2.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim3.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim4.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim5.png",
   ];
 
   IMAGES_TRANSITION = [
-    "img/2.Enemy/1.Puffer fish (3 color options)/2.transition/1.transition1.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/2.transition/1.transition2.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/2.transition/1.transition3.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/2.transition/1.transition4.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/2.transition/1.transition5.png",
   ];
 
   IMAGES_BUBBLESWIM = [
-    "img/2.Enemy/1.Puffer fish (3 color options)/3.Bubbleeswim/1.bubbleswim1.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/3.Bubbleeswim/1.bubbleswim2.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/3.Bubbleeswim/1.bubbleswim3.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/3.Bubbleeswim/1.bubbleswim4.png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/3.Bubbleeswim/1.bubbleswim5.png",
   ];
 
   IMAGES_DEAD = [
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 1 (can animate by going up).png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 1 (can animate by going up).png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 2 (can animate by going down to the floor after the Fin Slap attack).png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 2 (can animate by going down to the floor after the Fin Slap attack).png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 2 (can animate by going down to the floor after the Fin Slap attack).png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
-    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
   ];
 
   offset = {
@@ -50,18 +25,11 @@ class Pufferfish extends MovableObject {
   };
 
   constructor(world) {
-    super().loadImage(
-      "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png"
-    );
+    super()
     this.world = world; // Set the world property to the passed world object
-    this.x = 250 + Math.random() * 500; // Random x position
+    this.x = 350 + Math.random() * 2500; // Random x position
     this.speed = 0.25 + Math.random() * 0.15; // Random speed between 0.05 and 0.15
-    this.y = 350 - Math.random() * 300; // Random y position
-    this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGES_TRANSITION);
-    this.loadImages(this.IMAGES_BUBBLESWIM);
-    this.loadImages(this.IMAGES_DEAD);
-    this.animate();
+    this.y = 400 - Math.random() * 400; // Random y position
   }
 
   die(callback) {
@@ -69,10 +37,10 @@ class Pufferfish extends MovableObject {
     this.dead = true;
   let i = 0;
   let deathInterval = setInterval(() => {
-    this.width -= 10;
-    this.height -= 10;
-    this.y -= 3;
-    this.x += 10
+    this.width -= 5;
+    this.height -= 5;
+    this.y -= 5;
+    this.x += 15
     this.img = this.imageCache[this.IMAGES_DEAD[i]];
     i++;
     if (i >= this.IMAGES_DEAD.length) {

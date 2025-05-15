@@ -19,15 +19,15 @@ class Endboss extends MovableObject {
         "img/2.Enemy/3 Final Enemy/2.floating/13.png",
     ];
       offset = {
-    top: 50,
-    bottom: 50,
-    left: 50,
-    right: 50,
+    top: 250,
+    bottom: 100,
+    left: 20,
+    right: 20,
   }
     
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
-        this.x = 3100; // Set the initial x position of the Endboss
+        this.x = 3000; // Set the initial x position of the Endboss
         this.loadImages(this.IMAGES_WALKING);
         this.animate();
     }

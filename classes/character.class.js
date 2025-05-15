@@ -121,7 +121,7 @@ class Character extends MovableObject {
         this.registerAction(); // Register the action
       }
 
-      if (this.world.keyboard.LEFT && this.x > -650) {
+      if (this.world.keyboard.LEFT && this.x > -600) {
         this.x -= this.speed; // Move the character to the left
         this.otherDirection = true; // Set the direction to left
         this.registerAction(); // Register the action
@@ -138,7 +138,7 @@ class Character extends MovableObject {
         this.y += this.speed; // Move the character down
         this.registerAction(); // Register the action
       }
-      this.world.camera_x = -this.x + 50;
+      this.world.camera_x = -this.x + 80;
     }, 1000 / 60);
 
     this.animateSharkie();
@@ -177,47 +177,45 @@ class Character extends MovableObject {
     this.lastActionTime = Date.now(); // Update the last action time
   }
 
-  startBubbleAttack() {
-    if (this.isAttacking) return;
-    this.lastActionTime = new Date().getTime(); // Update the last action time
-    this.isAttacking = true;
-    this.currentImage = 0;
+ startBubbleAttack() {
+  if (this.isAttacking) return;
+  this.lastActionTime = Date.now();
+  this.isAttacking = true;
+  this.currentImage = 0;
 
-    let interval = setInterval(() => {
-      this.playAnimation(this.IMAGES_ATTACK_BUBBLE);
+  let interval = setInterval(() => {
+    this.playAnimation(this.IMAGES_ATTACK_BUBBLE);
 
-      // Wenn Animation zu Ende ist (letztes Bild erreicht)
-      if (this.currentImage >= this.IMAGES_ATTACK_BUBBLE.length) {
-        clearInterval(interval);
-        this.world.throwableObjects.push(
-          new ThrowableObject(this.x + 180, this.y + 110, 10)
-        );
+    if (this.currentImage >= this.IMAGES_ATTACK_BUBBLE.length) {
+      clearInterval(interval);
 
-        this.isAttacking = false;
-        console.log(this.world.throwableObjects);
-      }
-    }, 100);
-  }
+      const bubble = new ThrowableObject(this.x + 180, this.y + 110, 10, this.world, "bubble");
+      this.world.throwableObjects.push(bubble);
 
-    startFinAttack() {
-    if (this.isAttacking) return;
-    this.lastActionTime = new Date().getTime(); // Update the last action time
-    this.isAttacking = true;
-    this.currentImage = 0;
+      this.isAttacking = false;
+    }}, 100);
+}
 
-    let interval = setInterval(() => {
-      this.playAnimation(this.IMAGES_ATTACK_FIN);
+   startFinAttack() {
+  if (this.isAttacking) return;
+  this.lastActionTime = Date.now();
+  this.isAttacking = true;
+  this.currentImage = 0;
+  let finHitbox;
 
-      // Wenn Animation zu Ende ist (letztes Bild erreicht)
-      if (this.currentImage >= this.IMAGES_ATTACK_FIN.length) {
-        clearInterval(interval);
-        this.world.throwableObjects.push(
-          new ThrowableObject(this.x + 180, this.y + 110, 0)
-        );
+  let interval = setInterval(() => {
+    this.playAnimation(this.IMAGES_ATTACK_FIN);
 
-        this.isAttacking = false;
-        console.log(this.world.throwableObjects);
-      }
-    }, 100);
-  }
+    if (this.currentImage >= this.IMAGES_ATTACK_FIN.length) {
+      clearInterval(interval);
+      if (this.otherDirection) {
+        finHitbox = new ThrowableObject(this.x - 10, this.y + 110, 0, this.world, "fin");
+        this.world.throwableObjects.push(finHitbox);
+      this.isAttacking = false;
+      } else {
+      finHitbox = new ThrowableObject(this.x + 200, this.y + 110, 0, this.world, "fin");
+      this.world.throwableObjects.push(finHitbox);
+      this.isAttacking = false;}
+    }}, 100);
+}
 }
