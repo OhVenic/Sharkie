@@ -16,6 +16,7 @@ class World {
     this.setWorld();
     this.checkThrowObjects();
     this.checkCollisions();
+    this.checkEnemyHits();
   }
 
   setWorld() {
@@ -23,33 +24,50 @@ class World {
     this.addEnemies();
   }
 
- addEnemies() {
-  this.level.enemies.push(
-    new Pufferfish(this),
-    new Pufferfish(this),
-    new Pufferfish(this),
-    new Endboss()
-  );
-}
+  addEnemies() {
+    this.level.enemies.push(
+      new Pufferfish(this),
+      new Pufferfish(this),
+      new Pufferfish(this),
+      new Endboss()
+    );
+  }
 
   checkThrowObjects() {
-     setInterval(() => {
-    if (this.keyboard.SPACE && !this.character.isAttacking) {
-      this.character.startBubbleAttack(); 
-    }
-  }, 1000 / 60);
+    setInterval(() => {
+      if (this.keyboard.D && !this.character.isAttacking) {
+        this.character.startBubbleAttack();
+      }
+      if (this.keyboard.SPACE && !this.character.isAttacking) {
+        this.character.startFinAttack();
+      }
+    }, 1000 / 60);
   }
 
   checkCollisions() {
     this.level.enemies.forEach((enemy) => {
       setInterval(() => {
-      if (this.character.isColliding(enemy)) {
-        this.character.hit();
-      }
-      console.log(`Character life: ${this.character.life}`);
-      this.statusBar.setPercentage(this.character.life);
-    }, 1000)
+        if (!enemy.dead && this.character.isColliding(enemy)) {
+          this.character.hit();
+        }
+        this.statusBar.setPercentage(this.character.life);
+      }, 1000);
     });
+  }
+
+  checkEnemyHits() {
+    setInterval(() => {
+      this.level.enemies.forEach((enemy, enemyIndex) => {
+        this.throwableObjects.forEach((bubble, bubbleIndex) => {
+          if (bubble.isColliding(enemy) && !enemy.dead) {
+            enemy.die(() => {
+              this.level.enemies.splice(enemyIndex, 1);
+            });
+            this.throwableObjects.splice(bubbleIndex, 1);
+          }
+        });
+      });
+    }, 1000 / 30);
   }
 
   draw() {

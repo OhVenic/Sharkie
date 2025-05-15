@@ -3,6 +3,7 @@ class Pufferfish extends MovableObject {
   width = 100; // Set the width of the Pufferfish
   y = 350; // Set the y position of the Pufferfish
   transitionRunning = false; // Flag to check if transition is running
+  dead = false;
 
   IMAGES_WALKING = [
     "img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png",
@@ -30,7 +31,14 @@ class Pufferfish extends MovableObject {
 
   IMAGES_DEAD = [
     "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 1 (can animate by going up).png",
+    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 1 (can animate by going up).png",
     "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 2 (can animate by going down to the floor after the Fin Slap attack).png",
+    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 2 (can animate by going down to the floor after the Fin Slap attack).png",
+    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 2 (can animate by going down to the floor after the Fin Slap attack).png",
+    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
+    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
+    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
+    "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
     "img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/1.Dead 3 (can animate by going down to the floor after the Fin Slap attack).png",
   ];
 
@@ -56,6 +64,24 @@ class Pufferfish extends MovableObject {
     this.animate();
   }
 
+  die(callback) {
+    if (this.dead) return;
+    this.dead = true;
+  let i = 0;
+  let deathInterval = setInterval(() => {
+    this.width -= 10;
+    this.height -= 10;
+    this.y -= 3;
+    this.x += 10
+    this.img = this.imageCache[this.IMAGES_DEAD[i]];
+    i++;
+    if (i >= this.IMAGES_DEAD.length) {
+      clearInterval(deathInterval);
+      if (callback) callback(); // Entfernen nach Animation
+    }
+  }, 1000/20); // 100ms pro Frame
+}
+
   animate() {
     let currentImages = this.IMAGES_WALKING;
     let currentImageIndex = 0;
@@ -63,6 +89,7 @@ class Pufferfish extends MovableObject {
     this.moveLeft();
 
     setInterval(() => {
+      if (this.dead) return
       if (this.isColliding(this.world.character) && !transitionRunning) {
         transitionRunning = true;
         currentImages = this.IMAGES_TRANSITION;

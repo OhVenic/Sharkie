@@ -190,12 +190,33 @@ class Character extends MovableObject {
       if (this.currentImage >= this.IMAGES_ATTACK_BUBBLE.length) {
         clearInterval(interval);
         this.world.throwableObjects.push(
-          new ThrowableObject(this.x + 180, this.y + 110)
+          new ThrowableObject(this.x + 180, this.y + 110, 10)
         );
 
         this.isAttacking = false;
         console.log(this.world.throwableObjects);
-        
+      }
+    }, 100);
+  }
+
+    startFinAttack() {
+    if (this.isAttacking) return;
+    this.lastActionTime = new Date().getTime(); // Update the last action time
+    this.isAttacking = true;
+    this.currentImage = 0;
+
+    let interval = setInterval(() => {
+      this.playAnimation(this.IMAGES_ATTACK_FIN);
+
+      // Wenn Animation zu Ende ist (letztes Bild erreicht)
+      if (this.currentImage >= this.IMAGES_ATTACK_FIN.length) {
+        clearInterval(interval);
+        this.world.throwableObjects.push(
+          new ThrowableObject(this.x + 180, this.y + 110, 0)
+        );
+
+        this.isAttacking = false;
+        console.log(this.world.throwableObjects);
       }
     }, 100);
   }
