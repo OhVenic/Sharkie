@@ -6,6 +6,8 @@ class Character extends MovableObject {
   isAttacking = false;
   lastActionTime = Date.now();
   isIdleAnimationPlaying = false;
+  coins = 0;
+  poisonFlasks = 0;
 
   IMAGES_IDLE = [
     "img/1.Sharkie/1.IDLE/1.png",
@@ -179,6 +181,9 @@ class Character extends MovableObject {
 
  startBubbleAttack() {
   if (this.isAttacking) return;
+  if (this.world.collectedPoison <= 0) return;
+  this.world.collectedPoison -= 20;
+  this.world.poisonBar.setPercentage(this.world.collectedPoison);
   this.lastActionTime = Date.now();
   this.isAttacking = true;
   this.currentImage = 0;

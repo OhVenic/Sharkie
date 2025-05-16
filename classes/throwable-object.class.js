@@ -29,7 +29,7 @@ type = "bubble";
 
   loadTypeImage() {
     if (this.type === "bubble") {
-      this.loadImage("img/1.Sharkie/4.Attack/Bubble trap/Bubble.png");
+      this.loadImage("img/1.Sharkie/4.Attack/Bubble trap/Poisoned Bubble (for whale).png");
     } else if (this.type === "fin") {
       this.img = new Image(); // unsichtbar (leeres Image)
     }

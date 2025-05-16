@@ -38,8 +38,18 @@ const level1 = new Level(
     new BackgroundObject("img/3. Background/Layers/1. Light/2.png", 2880),
   ],
 
+     [
+    new Coin("img/4. Marcadores/1. Coins/1.png", 300, 400),
+    new Coin("img/4. Marcadores/1. Coins/1.png", 300, 300),
+    new Coin("img/4. Marcadores/1. Coins/1.png", 300, 200),
+    new Coin("img/4. Marcadores/1. Coins/1.png", 300, 100),
+  ],
+
   [
-    new Coin("img/4. Marcadores/1. Coins/1.png", 100, 400),
-    new PoisonFlask("img/4. Marcadores/Posión/Animada/1.png", 200, 400),
-  ]
+    new PoisonFlask("img/4. Marcadores/Posión/Animada/1.png", 400, 400),
+    new PoisonFlask("img/4. Marcadores/Posión/Animada/1.png", 400, 300),
+    new PoisonFlask("img/4. Marcadores/Posión/Animada/1.png", 400, 350),
+    new PoisonFlask("img/4. Marcadores/Posión/Animada/1.png", 400, 250),
+  ],
+
 );

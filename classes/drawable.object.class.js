@@ -29,7 +29,9 @@ class DrawableObject {
       this instanceof Character ||
       this instanceof Pufferfish ||
       this instanceof Endboss ||
-      this instanceof ThrowableObject
+      this instanceof ThrowableObject ||
+      this instanceof Coin ||
+      this instanceof PoisonFlask
     ) {
       ctx.beginPath();
       ctx.lineWidth = "3";

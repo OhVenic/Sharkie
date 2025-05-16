@@ -5,8 +5,12 @@ class World {
   canvas;
   keyboard;
   camera_x = 0;
-  statusBar = new StatusBar();
+  lifeBar = new StatusBar("life", 40, 0);
+  poisonBar = new StatusBar("poison", 40, 45);
+  coinBar = new StatusBar("coins", 40, 90);
   throwableObjects = [];
+  collectedCoins = 0;
+  collectedPoison = 0;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -17,6 +21,9 @@ class World {
     this.checkThrowObjects();
     this.checkCollisions();
     this.checkEnemyHits();
+    setInterval(() => {
+      this.checkCollectibles();
+    }, 1000 / 60);
   }
 
   setWorld() {
@@ -60,8 +67,30 @@ class World {
         if (!enemy.dead && this.character.isColliding(enemy)) {
           this.character.hit();
         }
-        this.statusBar.setPercentage(this.character.life);
+        this.lifeBar.setPercentage(this.character.life);
       }, 1000);
+    });
+  }
+
+  checkCollectibles() {
+    this.level.coins = this.level.coins.filter((coin) => {
+      if (this.character.isColliding(coin)) {
+        this.collectedCoins += 20;
+        if (this.collectedCoins > 100) this.collectedCoins = 100;
+        this.coinBar.setPercentage(this.collectedCoins);
+        return false; // entfernt dieses Objekt
+      }
+      return true;
+    });
+
+    this.level.poisonFlasks = this.level.poisonFlasks.filter((flask) => {
+      if (this.character.isColliding(flask)) {
+        this.collectedPoison += 20;
+        if (this.collectedPoison > 100) this.collectedPoison = 100;
+        this.poisonBar.setPercentage(this.collectedPoison);
+        return false;
+      }
+      return true;
     });
   }
 
@@ -84,15 +113,20 @@ class World {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
-    this.addObjectsToMap(this.level.collectibles);
+    this.addObjectsToMap(this.level.poisonFlasks);
+    this.addObjectsToMap(this.level.coins);
     this.ctx.translate(-this.camera_x, 0);
     // SPACE FOR FIXED OBJECTS
-    this.addToMap(this.statusBar);
+    this.addToMap(this.lifeBar);
+    this.addToMap(this.poisonBar);
+    this.addToMap(this.coinBar);
     // SPACE END FOR FIXED OBJECTS
     this.ctx.translate(this.camera_x, 0);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
-    this.throwableObjects = this.throwableObjects.filter(obj => !obj.markedForDeletion);
+    this.throwableObjects = this.throwableObjects.filter(
+      (obj) => !obj.markedForDeletion
+    );
     this.addObjectsToMap(this.throwableObjects);
 
     this.ctx.translate(-this.camera_x, 0);

@@ -1,4 +1,5 @@
 class Coin extends Collectible {
+  
   IMAGES_COLLECTIBLE = [
     "img/4. Marcadores/1. Coins/1.png",
     "img/4. Marcadores/1. Coins/2.png",
@@ -12,5 +13,5 @@ class Coin extends Collectible {
     this.x = x;
     this.loadImages(this.IMAGES_COLLECTIBLE);
     this.animate();
-}
+  }
 }
