@@ -9,11 +9,31 @@ class StatusBar extends DrawableObject {
     `img/4. Marcadores/Purple/100_ .png`,
   ]
 
+  IMAGE_POISON = [
+        "img/4. Marcadores/Purple/100_.png",
+        "img/4. Marcadores/Purple/80_.png",
+        "img/4. Marcadores/Purple/60_.png",
+        "img/4. Marcadores/Purple/40_.png",
+        "img/4. Marcadores/Purple/20_.png",
+        "img/4. Marcadores/Purple/0_.png"
+  ]
+  
+  IMAGE_COINS = [
+        "img/4. Marcadores/Purple/100__1.png",
+        "img/4. Marcadores/Purple/80_ _1.png",
+        "img/4. Marcadores/Purple/60_ _1.png",
+        "img/4. Marcadores/Purple/40_ _1.png",
+        "img/4. Marcadores/Purple/20_ _1.png",
+        "img/4. Marcadores/Purple/0_ _1.png",
+  ]
+
   percentage = 100;
 
   constructor() {
     super();
     this.loadImages(this.IMAGE_LIFE);
+    this.loadImages(this.IMAGE_POISON);
+    this.loadImages(this.IMAGE_COINS);
     this.x = 40;
     this.y = 0;
     this.width = 220;
