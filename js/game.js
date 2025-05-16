@@ -10,6 +10,7 @@ world = new World(canvas, keyboard);
 }
 
 window.addEventListener("keydown", (event) => { 
+    
     if(event.keyCode == 39) {
         keyboard.RIGHT = true;
     }
@@ -28,6 +29,9 @@ window.addEventListener("keydown", (event) => {
      if(event.keyCode == 68) {
         keyboard.D = true;
     } 
+    if(event.keyCode == 69) {
+        keyboard.E = true;
+    }
 })
 
 window.addEventListener("keyup", (event) => {
@@ -48,5 +52,8 @@ window.addEventListener("keyup", (event) => {
     }
     if(event.keyCode == 68) {
         keyboard.D = false;
+    }
+    if(event.keyCode == 69) {
+        keyboard.E = false;
     }
 })

@@ -11,6 +11,7 @@ class World {
   throwableObjects = [];
   collectedCoins = 0;
   collectedPoison = 0;
+  lastHealthTime = 0;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -58,6 +59,9 @@ class World {
       if (this.keyboard.SPACE && !this.character.isAttacking) {
         this.character.startFinAttack();
       }
+      if (this.keyboard.E && !this.character.isAttacking) {
+        this.addHealth();
+      }
     }, 1000 / 60);
   }
 
@@ -92,6 +96,18 @@ class World {
       }
       return true;
     });
+  }
+
+  addHealth() {
+    const now = Date.now();
+    if(now - this.lastHealthTime < 1000) return; // Prevent spamming
+    if (this.lifeBar.percentage === 100) return;
+    if (this.collectedCoins < 20) return;
+    this.character.life += 20;
+    this.collectedCoins -= 20;
+    this.lifeBar.setPercentage(this.character.life);
+    this.coinBar.setPercentage(this.collectedCoins);
+    this.lastHealthTime = now;
   }
 
   checkEnemyHits() {
