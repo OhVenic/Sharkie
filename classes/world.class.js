@@ -47,7 +47,13 @@ class World {
       new PufferFishPurple(this),
       new PufferFishPurple(this),
       new PufferFishPurple(this),
-      new Endboss()
+      new Endboss(),
+      new JellyFishYellow(this),
+      new JellyFishYellow(this),
+      new JellyFishYellow(this),
+      new JellyFishLila(this),
+      new JellyFishLila(this),
+      new JellyFishLila(this),
     );
   }
 
@@ -114,12 +120,18 @@ class World {
     setInterval(() => {
       this.level.enemies.forEach((enemy, enemyIndex) => {
         this.throwableObjects.forEach((bubble, bubbleIndex) => {
-          if (bubble.isColliding(enemy) && !enemy.dead) {
+           if (bubble.isColliding(enemy) && !enemy.dead) {
+          if (enemy instanceof JellyFish) {
+            enemy.jellyFishDie(() => {
+              this.level.enemies.splice(enemyIndex, 1);
+            });
+          } else {
             enemy.die(() => {
               this.level.enemies.splice(enemyIndex, 1);
             });
-            this.throwableObjects.splice(bubbleIndex, 1);
           }
+          this.throwableObjects.splice(bubbleIndex, 1);
+        }
         });
       });
     }, 1000 / 30);

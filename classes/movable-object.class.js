@@ -19,10 +19,19 @@ class MovableObject extends DrawableObject {
   }
 
  moveLeft() {
-  if (this.leftInterval) return; // schon aktiv? dann abbrechen
-
-  this.leftInterval = setInterval(() => {
+  setInterval(() => {
     this.x -= this.speed;
+  }, 1000 / 60);
+}
+
+moveJellyFish() {
+  let baseY = this.y; // Ausgangsposition merken
+  let t = 0;
+
+  setInterval(() => {
+    this.x -= this.speed;
+    this.y = baseY + Math.sin(t) * 10 + 20; // Amplitude auf 8 (statt 3)
+    t += 0.03; // Frequenz bleibt gleich
   }, 1000 / 60);
 }
 
