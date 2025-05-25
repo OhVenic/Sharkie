@@ -12,12 +12,12 @@
     <script src="./classes/puffer-fish-lightrose-class.js"></script>
     <script src="./classes/puffer-fish-purple.class.js"></script>
     <script src="./classes/jelly-fish.class.js"></script>
-     <script src="./classes/jelly-fish-lila-class.js"></script>
-      <script src="./classes/jelly-fish-yellow.class.js"></script>
+    <script src="./classes/jelly-fish-lila-class.js"></script>
+    <script src="./classes/jelly-fish-yellow.class.js"></script>
     <script src="./classes/background-object.class.js"></script>
     <script src="./classes/collectible.class.js"></script>
     <script src="./classes/collectible-poison-flask-class.js"></script>
-        <script src="./classes/collectible-coin.class.js"></script>
+    <script src="./classes/collectible-coin.class.js"></script>
     <script src="./classes/status-bar-object.class.js"></script>
     <script src="./classes/world.class.js"></script>
     <script src="./classes/keyboard.class.js"></script>
@@ -29,8 +29,19 @@
     <script src="./js/game.js"></script>
     <title>Document</title>
   </head>
-  <body onload="init()">
+  <body>
+  <div id="start-menu">
     <h1>Sharkie</h1>
-    <canvas width="720" height="480" id="canvas"> </canvas>
-  </body>
+    <button onclick="startGame()">Start</button>
+    <button onclick="showControls()">Controls</button>
+  </div>
+
+  <div id="controls-screen" class="hidden">
+    <h2>Controls</h2>
+    <img src="img/6.Botones/Instructions 3.png" alt="Controls" class="controls-img"/>
+    <button onclick="hideControls()">Back</button>
+  </div>
+<h1>Sharkie</h1>
+  <canvas width="720" height="480" id="canvas" class="hidden"></canvas>
+</body>
 </html>

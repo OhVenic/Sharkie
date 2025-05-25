@@ -22,6 +22,13 @@ class World {
     this.checkThrowObjects();
     this.checkCollisions();
     this.checkEnemyHits();
+    this.coinSound = new Audio("audio/Coins.mp3");
+    this.coinSound.volume = 0.2;
+    this.poisonSound = new Audio("audio/Flask.mp3");
+    this.poisonSound.volume = 0.2;
+    this.healSound = new Audio("audio/heal.mp3");
+    this.healSound.volume = 0.2;
+    this.enemyDeadSound = new Audio("audio/enemy-dead.mp3");
     setInterval(() => {
       this.checkCollectibles();
     }, 1000 / 60);
@@ -71,21 +78,24 @@ class World {
     }, 1000 / 60);
   }
 
-  checkCollisions() {
-    this.level.enemies.forEach((enemy) => {
-      setInterval(() => {
-        if (!enemy.dead && this.character.isColliding(enemy)) {
-          this.character.hit();
-        }
-        this.lifeBar.setPercentage(this.character.life);
-      }, 1000);
-    });
-  }
+checkCollisions() {
+  this.level.enemies.forEach((enemy) => {
+    setInterval(() => {
+      if (!enemy.dead && this.character.isColliding(enemy)) {
+        const type = enemy instanceof JellyFish ? "jelly" : "normal";
+        this.character.hit(type);
+      }
+      this.lifeBar.setPercentage(this.character.life);
+    }, 1000);
+  });
+}
 
   checkCollectibles() {
     this.level.coins = this.level.coins.filter((coin) => {
       if (this.character.isColliding(coin)) {
         this.collectedCoins += 20;
+        this.coinSound.currentTime = 0; // Reset sound to start
+        this.coinSound.play();
         if (this.collectedCoins > 100) this.collectedCoins = 100;
         this.coinBar.setPercentage(this.collectedCoins);
         return false; // entfernt dieses Objekt
@@ -96,6 +106,8 @@ class World {
     this.level.poisonFlasks = this.level.poisonFlasks.filter((flask) => {
       if (this.character.isColliding(flask)) {
         this.collectedPoison += 20;
+        this.poisonSound.currentTime = 0; // Reset sound to start
+        this.poisonSound.play();
         if (this.collectedPoison > 100) this.collectedPoison = 100;
         this.poisonBar.setPercentage(this.collectedPoison);
         return false;
@@ -114,12 +126,16 @@ class World {
     this.lifeBar.setPercentage(this.character.life);
     this.coinBar.setPercentage(this.collectedCoins);
     this.lastHealthTime = now;
+    this.healSound.currentTime = 0; // Reset sound to start
+    this.healSound.play();
   }
 
   checkEnemyHits() {
     setInterval(() => {
       this.level.enemies.forEach((enemy, enemyIndex) => {
         this.throwableObjects.forEach((bubble, bubbleIndex) => {
+                   this.enemyDeadSound.currentTime = 0; // Reset sound to start
+            this.enemyDeadSound.play();
            if (bubble.isColliding(enemy) && !enemy.dead) {
           if (enemy instanceof JellyFish) {
             enemy.jellyFishDie(() => {

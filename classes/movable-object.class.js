@@ -44,14 +44,21 @@ moveJellyFish() {
     ); // obere Kante von this < untere Kante von mo
   }
 
-  hit() {
-    this.life -= 20; // Decrease the life of the object by 20
-    if (this.life <= 0) {
-      this.life = 0; // Ensure life doesn't go below 0
-    } else {
-      this.lastHit = new Date().getTime();
-    }
+  hit(type = "normal") {
+  this.life -= 20;
+  this.damageSound.currentTime = 0; // Reset sound to start
+  this.damageSound.play();
+  if (this.life <= 0) {
+    this.life = 0;
+  } else {
+    this.lastHit = new Date().getTime();
+    this.lastHitType = type; // Speichert z. B. "jelly"
   }
+}
+
+wasShocked() {
+  return this.lastHitType === "jelly" && this.isHurt();
+}
 
   isDead() {
     return this.life <= 0; // Check if the object is dead

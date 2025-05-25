@@ -55,6 +55,8 @@ class JellyFish extends Pufferfish {
     this.dead = true;
   let i = 0;
   let deathInterval = setInterval(() => {
+    this.speed = 0;
+    this.y -= 2; // Jellyfish sinks down
     this.img = this.imageCache[this.IMAGES_DEAD[i]];
     i++;
     if (i >= this.IMAGES_DEAD.length) {

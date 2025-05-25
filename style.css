@@ -1,42 +1,102 @@
 @font-face {
-    font-family: "LuckiestGuy";
-    src: url("img/5.Font/LuckiestGuy-Regular.ttf") format("truetype");
+  font-family: "LuckiestGuy";
+  src: url("img/5.Font/LuckiestGuy-Regular.ttf") format("truetype");
+}
+
+html {
+    font-family: "LuckiestGuy", sans-serif;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-image: url("img/3. Background/body-background.jpg") ;
-    background-position: center;
-    font-family: "LuckiestGuy", sans-serif;
-    margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url("img/3. Background/body-background.jpg");
+  background-position: center;
+  margin: 0;
+}
+
+#start-menu,
+#controls-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("img/3. Background/body-background.jpg");
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+#start-menu h1 {
+  font-size: 64px;
+  margin-bottom: 30px;
+}
+
+#controls-screen img {
+  width: 40%;
+  height: auto;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: #1da1f2;
+  color: white;
+  font-family: "LuckiestGuy", sans-serif;
+}
+
+button:hover {
+  background-color: #0d8ddb;
+}
+
+.hidden {
+  display: none !important;
 }
 
 canvas {
-    background-color: black;
-    display: block;
+  background-color: black;
+  display: block;
 }
 
 h1 {
-    color: rgb(255, 255, 255);
-    text-shadow: 0 0 10px rgb(125, 125, 187), 0 0 20px rgb(111, 191, 248), 0 0 30px rgb(111, 191, 248), 0 0 40px rgb(111, 191, 248), 0 0 50px rgb(111, 191, 248), 0 0 60px rgb(111, 191, 248);
-    text-align: center;
-    font-size: 64px;
-    margin: 16px;
+  color: rgb(255, 255, 255);
+  text-shadow: 0 0 10px rgb(125, 125, 187), 0 0 20px rgb(111, 191, 248),
+    0 0 30px rgb(111, 191, 248), 0 0 40px rgb(111, 191, 248),
+    0 0 50px rgb(111, 191, 248), 0 0 60px rgb(111, 191, 248);
+  text-align: center;
+  font-size: 64px;
+  margin: 16px;
+}
+
+h2 {
+      color: rgb(255, 255, 255);
+  text-shadow: 0 0 10px rgb(125, 125, 187), 0 0 20px rgb(111, 191, 248),
+    0 0 30px rgb(111, 191, 248), 0 0 40px rgb(111, 191, 248),
+    0 0 50px rgb(111, 191, 248), 0 0 60px rgb(111, 191, 248);
+  text-align: center;
+  font-size: 48px;
+  margin: 16px;
 }
 
 @media only screen and (max-width: 720px) {
-    h1 {
-        display: none;
-    }
-    canvas {
-        width: 100%;
-    }
+  h1 {
+    display: none;
+  }
+  canvas {
+    width: 100%;
+  }
 }
 
 @media only screen and (max-height: 480px) {
-    canvas {
-        height: 100vh;
-    }
+  canvas {
+    height: 100vh;
+  }
 }

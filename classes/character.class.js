@@ -58,6 +58,12 @@ class Character extends MovableObject {
     "img/1.Sharkie/5.Hurt/1.Poisoned/5.png",
   ];
 
+  IMAGES_SHOCKED = [
+    "img/1.Sharkie/5.Hurt/2.Electric shock/1.png",
+    "img/1.Sharkie/5.Hurt/2.Electric shock/2.png",
+    "img/1.Sharkie/5.Hurt/2.Electric shock/3.png",
+  ];
+
   IMAGES_DEAD = [
     "img/1.Sharkie/6.dead/1.Poisoned/1.png",
     "img/1.Sharkie/6.dead/1.Poisoned/2.png",
@@ -107,49 +113,80 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_SHOCKED);
     this.loadImages(this.IMAGES_ATTACK_BUBBLE);
     this.loadImages(this.IMAGES_ATTACK_FIN);
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_LONG_IDLE);
+    this.swimSound = new Audio("audio/Sharkie moving.mp3");
+    this.bubbleSound = new Audio("audio/bubble.mp3");
+    this.finSound = new Audio("audio/finAttack.mp3");
+    this.damageSound = new Audio("audio/damage.mp3");
+    this.swimSound.volume = 0.1;
+    this.bubbleSound.volume = 0.4;
+    this.finSound.volume = 0.4;
 
     this.animate();
   }
 
-  animate() {
-    setInterval(() => {
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-        this.x += this.speed; // Move the character to the right
-        this.otherDirection = false; // Set the direction to right
-        this.registerAction(); // Register the action
-      }
-
-      if (this.world.keyboard.LEFT && this.x > -600) {
-        this.x -= this.speed; // Move the character to the left
-        this.otherDirection = true; // Set the direction to left
-        this.registerAction(); // Register the action
-      }
-
-      if (this.world.keyboard.UP && this.y > -70) {
-        this.y -= this.speed; // Move the character up
-        this.registerAction(); // Register the action
-      }
-      if (
-        this.world.keyboard.DOWN &&
-        this.y < this.world.canvas.height - this.height
-      ) {
-        this.y += this.speed; // Move the character down
-        this.registerAction(); // Register the action
-      }
-      this.world.camera_x = -this.x + 80;
-    }, 1000 / 60);
-
-    this.animateSharkie();
+  playSwimSound() {
+    if (this.swimSound.paused) {
+      this.swimSound.currentTime = 0;
+      this.swimSound.play();
+    }
   }
+
+animate() {
+  setInterval(() => {
+    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+      this.x += this.speed;
+      this.otherDirection = false;
+      this.registerAction();
+      this.playSwimSound();
+    }
+
+    if (this.world.keyboard.LEFT && this.x > -600) {
+      this.x -= this.speed;
+      this.otherDirection = true;
+      this.registerAction();
+      this.playSwimSound();
+    }
+
+    if (this.world.keyboard.UP && this.y > -70) {
+      this.y -= this.speed;
+      this.registerAction();
+      this.playSwimSound();
+    }
+
+    if (
+      this.world.keyboard.DOWN &&
+      this.y < this.world.canvas.height - this.height
+    ) {
+      this.y += this.speed;
+      this.registerAction();
+      this.playSwimSound();
+    }
+
+    let moving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT ||
+                 this.world.keyboard.UP || this.world.keyboard.DOWN;
+
+    if (!moving && !this.swimSound.paused) {
+      this.swimSound.pause();
+      this.swimSound.currentTime = 0;
+    }
+
+    this.world.camera_x = -this.x + 80;
+  }, 1000 / 60);
+
+  this.animateSharkie();
+}
 
   animateSharkie() {
     setInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
+      } else if (this.wasShocked()) {
+        this.playAnimation(this.IMAGES_SHOCKED);
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isAttacking) {
@@ -159,10 +196,8 @@ class Character extends MovableObject {
         this.world.keyboard.UP ||
         this.world.keyboard.DOWN
       ) {
-        // Walk animation
         this.playAnimation(this.IMAGES_WALKING);
       } else if (this.longIdle()) {
-        // Long idle animation
         this.playAnimation(this.IMAGES_LONG_IDLE);
       } else {
         this.playAnimation(this.IMAGES_IDLE);
@@ -179,48 +214,73 @@ class Character extends MovableObject {
     this.lastActionTime = Date.now(); // Update the last action time
   }
 
- startBubbleAttack() {
-  if (this.isAttacking) return;
-  if (this.world.collectedPoison <= 0) return;
-  this.world.collectedPoison -= 20;
-  this.world.poisonBar.setPercentage(this.world.collectedPoison);
-  this.lastActionTime = Date.now();
-  this.isAttacking = true;
-  this.currentImage = 0;
+  startBubbleAttack() {
+    if (this.isAttacking) return;
+    if (this.world.collectedPoison <= 0) return;
+    this.world.collectedPoison -= 20;
+    this.world.poisonBar.setPercentage(this.world.collectedPoison);
+    this.lastActionTime = Date.now();
+    this.isAttacking = true;
+    this.currentImage = 0;
+    this.bubbleSound.currentTime = 0;
+    this.bubbleSound.play();
 
-  let interval = setInterval(() => {
-    this.playAnimation(this.IMAGES_ATTACK_BUBBLE);
+    let interval = setInterval(() => {
+      this.playAnimation(this.IMAGES_ATTACK_BUBBLE);
 
-    if (this.currentImage >= this.IMAGES_ATTACK_BUBBLE.length) {
-      clearInterval(interval);
+      if (this.currentImage >= this.IMAGES_ATTACK_BUBBLE.length) {
+        clearInterval(interval);
 
-      const bubble = new ThrowableObject(this.x + 180, this.y + 110, 10, this.world, "bubble");
-      this.world.throwableObjects.push(bubble);
+        const bubble = new ThrowableObject(
+          this.x + 180,
+          this.y + 110,
+          10,
+          this.world,
+          "bubble"
+        );
+        this.world.throwableObjects.push(bubble);
 
-      this.isAttacking = false;
-    }}, 100);
-}
+        this.isAttacking = false;
+      }
+    }, 100);
+  }
 
-   startFinAttack() {
-  if (this.isAttacking) return;
-  this.lastActionTime = Date.now();
-  this.isAttacking = true;
-  this.currentImage = 0;
-  let finHitbox;
+  startFinAttack() {
+    if (this.isAttacking) return;
+    this.lastActionTime = Date.now();
+    this.isAttacking = true;
+    this.currentImage = 0;
+    let finHitbox;
+    this.finSound.currentTime = 0;
+    this.finSound.play();
 
-  let interval = setInterval(() => {
-    this.playAnimation(this.IMAGES_ATTACK_FIN);
+    let interval = setInterval(() => {
+      this.playAnimation(this.IMAGES_ATTACK_FIN);
 
-    if (this.currentImage >= this.IMAGES_ATTACK_FIN.length) {
-      clearInterval(interval);
-      if (this.otherDirection) {
-        finHitbox = new ThrowableObject(this.x - 10, this.y + 110, 0, this.world, "fin");
-        this.world.throwableObjects.push(finHitbox);
-      this.isAttacking = false;
-      } else {
-      finHitbox = new ThrowableObject(this.x + 200, this.y + 110, 0, this.world, "fin");
-      this.world.throwableObjects.push(finHitbox);
-      this.isAttacking = false;}
-    }}, 100);
-}
+      if (this.currentImage >= this.IMAGES_ATTACK_FIN.length) {
+        clearInterval(interval);
+        if (this.otherDirection) {
+          finHitbox = new ThrowableObject(
+            this.x - 10,
+            this.y + 110,
+            0,
+            this.world,
+            "fin"
+          );
+          this.world.throwableObjects.push(finHitbox);
+          this.isAttacking = false;
+        } else {
+          finHitbox = new ThrowableObject(
+            this.x + 200,
+            this.y + 110,
+            0,
+            this.world,
+            "fin"
+          );
+          this.world.throwableObjects.push(finHitbox);
+          this.isAttacking = false;
+        }
+      }
+    }, 100);
+  }
 }
