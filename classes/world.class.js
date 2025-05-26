@@ -40,6 +40,7 @@ class World {
   }
 
   addEnemies() {
+    this.level.enemies = [];
     this.level.enemies.push(
       new PufferFishGreen(this),
       new PufferFishGreen(this),
@@ -60,12 +61,13 @@ class World {
       new JellyFishYellow(this),
       new JellyFishLila(this),
       new JellyFishLila(this),
-      new JellyFishLila(this),
+      new JellyFishLila(this)
     );
   }
 
   checkThrowObjects() {
     setInterval(() => {
+      if (!gameIsRunning) return;
       if (this.keyboard.D && !this.character.isAttacking) {
         this.character.startBubbleAttack();
       }
@@ -78,17 +80,18 @@ class World {
     }, 1000 / 60);
   }
 
-checkCollisions() {
-  this.level.enemies.forEach((enemy) => {
-    setInterval(() => {
-      if (!enemy.dead && this.character.isColliding(enemy)) {
-        const type = enemy instanceof JellyFish ? "jelly" : "normal";
-        this.character.hit(type);
-      }
-      this.lifeBar.setPercentage(this.character.life);
-    }, 1000);
-  });
-}
+  checkCollisions() {
+    this.level.enemies.forEach((enemy) => {
+      setInterval(() => {
+        if (!gameIsRunning) return;
+        if (!enemy.dead && this.character.isColliding(enemy)) {
+          const type = enemy instanceof JellyFish ? "jelly" : "normal";
+          this.character.hit(type);
+        }
+        this.lifeBar.setPercentage(this.character.life);
+      }, 1000);
+    });
+  }
 
   checkCollectibles() {
     this.level.coins = this.level.coins.filter((coin) => {
@@ -118,7 +121,7 @@ checkCollisions() {
 
   addHealth() {
     const now = Date.now();
-    if(now - this.lastHealthTime < 1000) return; // Prevent spamming
+    if (now - this.lastHealthTime < 1000) return; // Prevent spamming
     if (this.lifeBar.percentage === 100) return;
     if (this.collectedCoins < 20) return;
     this.character.life += 20;
@@ -132,22 +135,25 @@ checkCollisions() {
 
   checkEnemyHits() {
     setInterval(() => {
+      if (!gameIsRunning) return;
       this.level.enemies.forEach((enemy, enemyIndex) => {
         this.throwableObjects.forEach((bubble, bubbleIndex) => {
-                   this.enemyDeadSound.currentTime = 0; // Reset sound to start
-            this.enemyDeadSound.play();
-           if (bubble.isColliding(enemy) && !enemy.dead) {
-          if (enemy instanceof JellyFish) {
-            enemy.jellyFishDie(() => {
-              this.level.enemies.splice(enemyIndex, 1);
-            });
-          } else {
-            enemy.die(() => {
-              this.level.enemies.splice(enemyIndex, 1);
-            });
+          if (bubble.isColliding(enemy) && !enemy.dead) {
+            if (enemy instanceof JellyFish) {
+              this.enemyDeadSound.currentTime = 0; // Reset sound to start
+              this.enemyDeadSound.play();
+              enemy.jellyFishDie(() => {
+                this.level.enemies.splice(enemyIndex, 1);
+              });
+            } else {
+              this.enemyDeadSound.currentTime = 0; // Reset sound to start
+              this.enemyDeadSound.play();
+              enemy.die(() => {
+                this.level.enemies.splice(enemyIndex, 1);
+              });
+            }
+            this.throwableObjects.splice(bubbleIndex, 1);
           }
-          this.throwableObjects.splice(bubbleIndex, 1);
-        }
         });
       });
     }, 1000 / 30);

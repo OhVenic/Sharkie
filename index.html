@@ -39,9 +39,18 @@
   <div id="controls-screen" class="hidden">
     <h2>Controls</h2>
     <img src="img/6.Botones/Instructions 3.png" alt="Controls" class="controls-img"/>
+    <div class="controls-text">
+    <p>D is only possible when you have picked up poison flasks</p>
+    <p>Trade coins for health with E</p>
+    </div>
     <button onclick="hideControls()">Back</button>
   </div>
-<h1>Sharkie</h1>
+<h1 class="mobile-h1">Sharkie</h1>
+<button id="mute-btn" onclick="toggleMute()">🔊</button>
   <canvas width="720" height="480" id="canvas" class="hidden"></canvas>
+  <div id="game-over-screen" class="hidden">
+  <img src="img/6.Botones/Tittles/Game Over/Recurso 12.png" class="game-over-title">
+  <img src="img/6.Botones/Try again/Recurso 17.png" onclick="restartGame()" class="try-again-button">
+</div>
 </body>
 </html>

@@ -18,22 +18,24 @@ class MovableObject extends DrawableObject {
     }, 1000 / 60); // Move the object to the left at 5 pixels per frame
   }
 
- moveLeft() {
-  setInterval(() => {
-    this.x -= this.speed;
-  }, 1000 / 60);
-}
+  moveLeft() {
+    setInterval(() => {
+      if (!gameIsRunning) return;
+      this.x -= this.speed;
+    }, 1000 / 60);
+  }
 
-moveJellyFish() {
-  let baseY = this.y; // Ausgangsposition merken
-  let t = 0;
+  moveJellyFish() {
+    let baseY = this.y; // Ausgangsposition merken
+    let t = 0;
 
-  setInterval(() => {
-    this.x -= this.speed;
-    this.y = baseY + Math.sin(t) * 10 + 20; // Amplitude auf 8 (statt 3)
-    t += 0.03; // Frequenz bleibt gleich
-  }, 1000 / 60);
-}
+    setInterval(() => {
+           if (!gameIsRunning) return;
+      this.x -= this.speed;
+      this.y = baseY + Math.sin(t) * 10 + 20; // Amplitude auf 8 (statt 3)
+      t += 0.03; // Frequenz bleibt gleich
+    }, 1000 / 60);
+  }
 
   isColliding(mo) {
     return (
@@ -45,20 +47,20 @@ moveJellyFish() {
   }
 
   hit(type = "normal") {
-  this.life -= 20;
-  this.damageSound.currentTime = 0; // Reset sound to start
-  this.damageSound.play();
-  if (this.life <= 0) {
-    this.life = 0;
-  } else {
-    this.lastHit = new Date().getTime();
-    this.lastHitType = type; // Speichert z. B. "jelly"
+    this.life -= 20;
+    this.damageSound.currentTime = 0; // Reset sound to start
+    this.damageSound.play();
+    if (this.life <= 0) {
+      this.life = 0;
+    } else {
+      this.lastHit = new Date().getTime();
+      this.lastHitType = type; // Speichert z. B. "jelly"
+    }
   }
-}
 
-wasShocked() {
-  return this.lastHitType === "jelly" && this.isHurt();
-}
+  wasShocked() {
+    return this.lastHitType === "jelly" && this.isHurt();
+  }
 
   isDead() {
     return this.life <= 0; // Check if the object is dead

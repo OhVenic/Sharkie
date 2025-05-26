@@ -1,6 +1,7 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let gameIsRunning = true;
 let backgroundMusic = new Audio('audio/background-music.mp3');
 backgroundMusic.loop = true;
 backgroundMusic.volume = 0.1;
@@ -20,6 +21,7 @@ function startGame() {
 
 function init() {
 canvas = document.getElementById("canvas")
+  keyboard = new Keyboard();
 world = new World(canvas, keyboard);
 }
 
@@ -33,8 +35,43 @@ function hideControls() {
   document.getElementById('start-menu').classList.remove('hidden');
 }
 
+let isMuted = false;
+
+function toggleMute() {
+  isMuted = !isMuted;
+  document.getElementById('mute-btn').innerText = isMuted ? '🔇' : '🔊';
+
+  // Add all Sounds here
+  [backgroundMusic, world?.character?.swimSound, world?.character?.bubbleSound, world?.character?.finSound, world?.character?.damageSound, world?.coinSound, world?.poisonSound, world?.healSound, world?.enemyDeadSound]
+    .forEach(sound => {
+      if (sound) sound.muted = isMuted;
+    });
+}
+
+function showGameOver() {
+  document.getElementById('game-over-screen').classList.remove('hidden');
+ gameIsRunning = false;
+  if (backgroundMusic) backgroundMusic.pause();
+}
+
+function restartGame() {
+  document.getElementById('game-over-screen').classList.add('hidden');
+
+  gameIsRunning = true;
+
+  init();
+
+  backgroundMusic.currentTime = 0;
+  if (!isMuted) backgroundMusic.play();
+}
+
 
 window.addEventListener("keydown", (event) => { 
+    const key = event.keyCode
+      const blockKeys = [32, 37, 38, 39, 40, 68, 69];
+  if (blockKeys.includes(key)) {
+    event.preventDefault();
+  }
     if(event.keyCode == 39) {
         keyboard.RIGHT = true;
     }
@@ -59,6 +96,12 @@ window.addEventListener("keydown", (event) => {
 })
 
 window.addEventListener("keyup", (event) => {
+      const key = event.keyCode;
+
+  if ([32, 37, 38, 39, 40, 68, 69].includes(key)) {
+    event.preventDefault(); // optional hier auch
+  }
+
     if(event.keyCode == 39) {
         keyboard.RIGHT = false;
     }

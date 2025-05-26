@@ -136,55 +136,60 @@ class Character extends MovableObject {
     }
   }
 
-animate() {
-  setInterval(() => {
-    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-      this.x += this.speed;
-      this.otherDirection = false;
-      this.registerAction();
-      this.playSwimSound();
-    }
+  animate() {
+    setInterval(() => {
+      if (!gameIsRunning) return;
+      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+        this.x += this.speed;
+        this.otherDirection = false;
+        this.registerAction();
+        this.playSwimSound();
+      }
 
-    if (this.world.keyboard.LEFT && this.x > -600) {
-      this.x -= this.speed;
-      this.otherDirection = true;
-      this.registerAction();
-      this.playSwimSound();
-    }
+      if (this.world.keyboard.LEFT && this.x > -600) {
+        this.x -= this.speed;
+        this.otherDirection = true;
+        this.registerAction();
+        this.playSwimSound();
+      }
 
-    if (this.world.keyboard.UP && this.y > -70) {
-      this.y -= this.speed;
-      this.registerAction();
-      this.playSwimSound();
-    }
+      if (this.world.keyboard.UP && this.y > -70) {
+        this.y -= this.speed;
+        this.registerAction();
+        this.playSwimSound();
+      }
 
-    if (
-      this.world.keyboard.DOWN &&
-      this.y < this.world.canvas.height - this.height
-    ) {
-      this.y += this.speed;
-      this.registerAction();
-      this.playSwimSound();
-    }
+      if (
+        this.world.keyboard.DOWN &&
+        this.y < this.world.canvas.height - this.height
+      ) {
+        this.y += this.speed;
+        this.registerAction();
+        this.playSwimSound();
+      }
 
-    let moving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT ||
-                 this.world.keyboard.UP || this.world.keyboard.DOWN;
+      let moving =
+        this.world.keyboard.RIGHT ||
+        this.world.keyboard.LEFT ||
+        this.world.keyboard.UP ||
+        this.world.keyboard.DOWN;
 
-    if (!moving && !this.swimSound.paused) {
-      this.swimSound.pause();
-      this.swimSound.currentTime = 0;
-    }
+      if (!moving && !this.swimSound.paused) {
+        this.swimSound.pause();
+        this.swimSound.currentTime = 0;
+      }
 
-    this.world.camera_x = -this.x + 80;
-  }, 1000 / 60);
+      this.world.camera_x = -this.x + 80;
+    }, 1000 / 60);
 
-  this.animateSharkie();
-}
+    this.animateSharkie();
+  }
 
   animateSharkie() {
     setInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
+        showGameOver();
       } else if (this.wasShocked()) {
         this.playAnimation(this.IMAGES_SHOCKED);
       } else if (this.isHurt()) {
@@ -215,6 +220,7 @@ animate() {
   }
 
   startBubbleAttack() {
+    if (!gameIsRunning) return;
     if (this.isAttacking) return;
     if (this.world.collectedPoison <= 0) return;
     this.world.collectedPoison -= 20;
@@ -246,6 +252,7 @@ animate() {
   }
 
   startFinAttack() {
+    if (!gameIsRunning) return;
     if (this.isAttacking) return;
     this.lastActionTime = Date.now();
     this.isAttacking = true;
