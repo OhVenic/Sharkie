@@ -22,6 +22,7 @@ class World {
     this.checkThrowObjects();
     this.checkCollisions();
     this.checkEnemyHits();
+    this.character.life = 100;
     this.coinSound = new Audio("audio/Coins.mp3");
     this.coinSound.volume = 0.2;
     this.poisonSound = new Audio("audio/Flask.mp3");

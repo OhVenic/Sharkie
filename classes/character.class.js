@@ -3,6 +3,7 @@ class Character extends MovableObject {
   width = 220; // Set the width of the character
   speed = 8;
   world;
+  life = 100;
   isAttacking = false;
   lastActionTime = Date.now();
   isIdleAnimationPlaying = false;
@@ -110,6 +111,7 @@ class Character extends MovableObject {
 
   constructor() {
     super().loadImage("img/1.Sharkie/1.IDLE/1.png");
+     this.gameOverTriggered = false;
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
@@ -189,7 +191,10 @@ class Character extends MovableObject {
     setInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
-        showGameOver();
+        if (!this.gameOverTriggered) {
+          this.gameOverTriggered = true;
+          showGameOver();
+        }
       } else if (this.wasShocked()) {
         this.playAnimation(this.IMAGES_SHOCKED);
       } else if (this.isHurt()) {
