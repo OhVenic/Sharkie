@@ -26,10 +26,10 @@ class Pufferfish extends MovableObject {
 
   constructor(world) {
     super()
-    this.world = world; // Set the world property to the passed world object
-    this.x = 350 + Math.random() * 2500; // Random x position
-    this.speed = 0.25 + Math.random() * 0.15; // Random speed between 0.05 and 0.15
-    this.y = 400 - Math.random() * 400; // Random y position
+    this.world = world; 
+    this.x = 350 + Math.random() * 2500; 
+    this.speed = 0.25 + Math.random() * 0.15; 
+    this.y = 400 - Math.random() * 400; 
   }
 
   die(callback) {
@@ -45,9 +45,9 @@ class Pufferfish extends MovableObject {
     i++;
     if (i >= this.IMAGES_DEAD.length) {
       clearInterval(deathInterval);
-      if (callback) callback(); // Entfernen nach Animation
+      if (callback) callback();
     }
-  }, 1000/20); // 100ms pro Frame
+  }, 1000/20); 
 }
 
   animate() {
@@ -64,18 +64,18 @@ class Pufferfish extends MovableObject {
         currentImageIndex = 0;
       }
 
-      // Aktuelles Bild anzeigen
+      
       this.img = this.imageCache[currentImages[currentImageIndex]];
       currentImageIndex++;
 
-      // Wenn Animation vorbei ist
+     
       if (currentImageIndex >= currentImages.length) {
         if (transitionRunning) {
-          // Nach Transition: in Bubbleswim wechseln
+        
           currentImages = this.IMAGES_BUBBLESWIM;
           currentImageIndex = 0;
         } else {
-          // Wenn normale Animation wieder von vorn
+     
           currentImageIndex = 0;
         }
       }

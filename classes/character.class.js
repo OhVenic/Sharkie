@@ -111,7 +111,7 @@ class Character extends MovableObject {
 
   constructor() {
     super().loadImage("img/1.Sharkie/1.IDLE/1.png");
-     this.gameOverTriggered = false;
+    this.gameOverTriggered = false;
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
@@ -124,6 +124,8 @@ class Character extends MovableObject {
     this.bubbleSound = new Audio("audio/bubble.mp3");
     this.finSound = new Audio("audio/finAttack.mp3");
     this.damageSound = new Audio("audio/damage.mp3");
+    this.loseSound = new Audio("audio/game-lose.mp3");
+    this.loseSound.volume = 0.5;
     this.swimSound.volume = 0.1;
     this.bubbleSound.volume = 0.4;
     this.finSound.volume = 0.4;
@@ -139,80 +141,89 @@ class Character extends MovableObject {
   }
 
   animate() {
-    setInterval(() => {
-      if (!gameIsRunning) return;
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-        this.x += this.speed;
-        this.otherDirection = false;
-        this.registerAction();
-        this.playSwimSound();
-      }
+    intervals.push(
+      setInterval(() => {
+        if (!gameIsRunning) return;
+        if (
+          this.world.keyboard.RIGHT &&
+          this.x < this.world.level.level_end_x
+        ) {
+          this.x += this.speed;
+          this.otherDirection = false;
+          this.registerAction();
+          this.playSwimSound();
+        }
 
-      if (this.world.keyboard.LEFT && this.x > -600) {
-        this.x -= this.speed;
-        this.otherDirection = true;
-        this.registerAction();
-        this.playSwimSound();
-      }
+        if (this.world.keyboard.LEFT && this.x > -600) {
+          this.x -= this.speed;
+          this.otherDirection = true;
+          this.registerAction();
+          this.playSwimSound();
+        }
 
-      if (this.world.keyboard.UP && this.y > -70) {
-        this.y -= this.speed;
-        this.registerAction();
-        this.playSwimSound();
-      }
+        if (this.world.keyboard.UP && this.y > -70) {
+          this.y -= this.speed;
+          this.registerAction();
+          this.playSwimSound();
+        }
 
-      if (
-        this.world.keyboard.DOWN &&
-        this.y < this.world.canvas.height - this.height
-      ) {
-        this.y += this.speed;
-        this.registerAction();
-        this.playSwimSound();
-      }
+        if (
+          this.world.keyboard.DOWN &&
+          this.y < this.world.canvas.height - this.height
+        ) {
+          this.y += this.speed;
+          this.registerAction();
+          this.playSwimSound();
+        }
 
-      let moving =
-        this.world.keyboard.RIGHT ||
-        this.world.keyboard.LEFT ||
-        this.world.keyboard.UP ||
-        this.world.keyboard.DOWN;
+        let moving =
+          this.world.keyboard.RIGHT ||
+          this.world.keyboard.LEFT ||
+          this.world.keyboard.UP ||
+          this.world.keyboard.DOWN;
 
-      if (!moving && !this.swimSound.paused) {
-        this.swimSound.pause();
-        this.swimSound.currentTime = 0;
-      }
+        if (!moving && !this.swimSound.paused) {
+          this.swimSound.pause();
+          this.swimSound.currentTime = 0;
+        }
 
-      this.world.camera_x = -this.x + 80;
-    }, 1000 / 60);
+        this.world.camera_x = -this.x + 80;
+      }, 1000 / 60)
+    );
 
     this.animateSharkie();
   }
 
   animateSharkie() {
-    setInterval(() => {
-      if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-        if (!this.gameOverTriggered) {
-          this.gameOverTriggered = true;
-          showGameOver();
+    intervals.push(
+      setInterval(() => {
+        if (this.isDead()) {
+          this.playAnimation(this.IMAGES_DEAD);
+          if (!this.gameOverTriggered) {
+            this.gameOverTriggered = true;
+            showGameOver();
+            this.loseSound.currentTime = 0;
+            this.loseSound.play();
+          }
+        } else if (this.wasShocked()) {
+          this.playAnimation(this.IMAGES_SHOCKED);
+        } else if (this.isHurt()) {
+          this.playAnimation(this.IMAGES_HURT);
+        } else if (this.isAttacking) {
+        } else if (
+          this.world.keyboard.RIGHT ||
+          this.world.keyboard.LEFT ||
+          this.world.keyboard.UP ||
+          this.world.keyboard.DOWN
+        ) {
+          this.playAnimation(this.IMAGES_WALKING);
+        } else if (this.longIdle()) {
+          this.playAnimation(this.IMAGES_LONG_IDLE);
+        } else {
+          this.playAnimation(this.IMAGES_IDLE);
         }
-      } else if (this.wasShocked()) {
-        this.playAnimation(this.IMAGES_SHOCKED);
-      } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-      } else if (this.isAttacking) {
-      } else if (
-        this.world.keyboard.RIGHT ||
-        this.world.keyboard.LEFT ||
-        this.world.keyboard.UP ||
-        this.world.keyboard.DOWN
-      ) {
-        this.playAnimation(this.IMAGES_WALKING);
-      } else if (this.longIdle()) {
-        this.playAnimation(this.IMAGES_LONG_IDLE);
-      } else {
-        this.playAnimation(this.IMAGES_IDLE);
-      }
-    }, 100);
+      }, 100)
+    );
   }
 
   longIdle() {

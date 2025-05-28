@@ -2,6 +2,7 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 let gameIsRunning = true;
+let intervals = [];
 let backgroundMusic = new Audio('audio/background-music.mp3');
 backgroundMusic.loop = true;
 backgroundMusic.volume = 0.1;
@@ -54,13 +55,25 @@ function showGameOver() {
   if (backgroundMusic) backgroundMusic.pause();
 }
 
+function showGameWon() {
+  document.getElementById('game-won-screen').classList.remove('hidden');
+  gameIsRunning = false;
+  if (backgroundMusic) backgroundMusic.pause();
+}
+
 function restartGame() {
   document.getElementById('game-over-screen').classList.add('hidden');
-
+  document.getElementById('game-won-screen').classList.add('hidden');
   gameIsRunning = true;
 
-  init();
+  intervals.forEach(clearInterval);
+  intervals = [];
 
+  if (world) {
+    world = null;
+  }
+
+  init();
   backgroundMusic.currentTime = 0;
   if (!isMuted) backgroundMusic.play();
 }

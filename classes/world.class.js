@@ -1,6 +1,6 @@
 class World {
   character = new Character();
-  level = level1;
+  level = createLevel1();
   ctx;
   canvas;
   keyboard;
@@ -56,7 +56,7 @@ class World {
       new PufferFishPurple(this),
       new PufferFishPurple(this),
       new PufferFishPurple(this),
-      new Endboss(),
+      new Endboss(this),
       new JellyFishYellow(this),
       new JellyFishYellow(this),
       new JellyFishYellow(this),
@@ -83,14 +83,14 @@ class World {
 
   checkCollisions() {
     this.level.enemies.forEach((enemy) => {
-      setInterval(() => {
+      intervals.push(setInterval(() => {
         if (!gameIsRunning) return;
         if (!enemy.dead && this.character.isColliding(enemy)) {
           const type = enemy instanceof JellyFish ? "jelly" : "normal";
           this.character.hit(type);
         }
         this.lifeBar.setPercentage(this.character.life);
-      }, 1000);
+      }, 1000));
     });
   }
 
@@ -146,6 +146,8 @@ class World {
               enemy.jellyFishDie(() => {
                 this.level.enemies.splice(enemyIndex, 1);
               });
+            } else if (enemy instanceof Endboss) {
+              enemy.takeHit(); // nur ein Leben abziehen
             } else {
               this.enemyDeadSound.currentTime = 0; // Reset sound to start
               this.enemyDeadSound.play();

@@ -1,4 +1,5 @@
-const level1 = new Level(
+function createLevel1() {
+  return new Level(
   [],
   [
     new BackgroundObject("img/3. Background/Layers/5. Water/L2.png", -720),
@@ -31,11 +32,11 @@ const level1 = new Level(
     new BackgroundObject("img/3. Background/Layers/2. Floor/L2.png", 2160),
     new BackgroundObject("img/3. Background/Layers/1. Light/2.png", 2160),
 
-    new BackgroundObject("img/3. Background/Layers/5. Water/L2.png", 2880),
-    new BackgroundObject("img/3. Background/Layers/3.Fondo 1/L2.png", 2880),
-    new BackgroundObject("img/3. Background/Layers/4.Fondo 2/L2.png", 2880),
-    new BackgroundObject("img/3. Background/Layers/2. Floor/L2.png", 2880),
-    new BackgroundObject("img/3. Background/Layers/1. Light/2.png", 2880),
+    new BackgroundObject("img/3. Background/Layers/5. Water/L1.png", 2880),
+    new BackgroundObject("img/3. Background/Layers/3.Fondo 1/L1.png", 2880),
+    new BackgroundObject("img/3. Background/Layers/4.Fondo 2/L1.png", 2880),
+    new BackgroundObject("img/3. Background/Layers/2. Floor/L1.png", 2880),
+    new BackgroundObject("img/3. Background/Layers/1. Light/1.png", 2880),
   ],
 
      [
@@ -76,4 +77,4 @@ const level1 = new Level(
     new PoisonFlask("img/4. Marcadores/Posión/Animada/1.png", -350, 125),
   ],
 
-);
+)}

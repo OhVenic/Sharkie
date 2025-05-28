@@ -47,6 +47,7 @@ class MovableObject extends DrawableObject {
   }
 
   hit(type = "normal") {
+    if (this.isDead()) return; // Prevent further hits if already dead
     this.life -= 20;
     this.damageSound.currentTime = 0; // Reset sound to start
     this.damageSound.play();
@@ -71,4 +72,6 @@ class MovableObject extends DrawableObject {
     timepassed = timepassed / 1000; // Convert to seconds
     return timepassed < 0.75; // Check if the object is hurt
   }
+
+  
 }
