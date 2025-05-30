@@ -218,6 +218,11 @@ h2 {
     display: none;
   }
 
+  #controls-screen p {
+    font-size: 14px;
+  }
+
+
   .controls-btn {
     font-size: 16px;
     margin-bottom: 16px;
@@ -281,7 +286,7 @@ h2 {
 @media (max-width: 720px) {
   
   #controls-screen p {
-    font-size: 16px;
+    font-size: 12px;
   }
 
     .game-container {
