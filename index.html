@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="img/1.Sharkie/1.IDLE/1.png" type="image/x-icon">
     <script src="./classes/drawable.object.class.js"></script>
     <script src="./classes/movable-object.class.js"></script>
     <script src="./classes/character.class.js"></script>
@@ -27,13 +28,14 @@
     <script src="./classes/throwable-object.class.js"></script>
     <script src="./levels/level1.js"></script>
     <script src="./js/game.js"></script>
-    <title>Document</title>
+    <title>Sharkie</title>
   </head>
   <body>
   <div id="start-menu">
     <h1>Sharkie</h1>
     <button onclick="startGame()">Start</button>
     <button onclick="showControls()">Controls</button>
+    <button onclick="showImprint()">Imprint</button>
   </div>
 
   <div id="controls-screen" class="hidden">
@@ -44,6 +46,16 @@
     <p>Trade coins for health with E</p>
     </div>
     <button onclick="hideControls()" class="controls-btn">Back</button>
+  </div>
+  <div id="imprint-screen" class="hidden">
+    <h2>Imprint</h2>
+    <div class="imprint-text">
+    <p>Sharkie Game</p>
+    <p>Developed by: Noah Velickovic</p>
+    <p>Contact: noah.velic@hotmail.com</p>
+    <p>© 2025 All rights reserved</p>
+    </div>
+    <button onclick="hideImprint()" class="controls-btn">Back</button>
   </div>
 <h1 class="mobile-h1">Sharkie</h1>
 <div class="center">

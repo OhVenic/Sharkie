@@ -54,6 +54,17 @@ function hideControls() {
   document.getElementById('start-menu').classList.remove('hidden');
 }
 
+function showImprint() {
+  document.getElementById('start-menu').classList.add('hidden');
+  document.getElementById('imprint-screen').classList.remove('hidden');
+}
+
+function hideImprint() {
+  document.getElementById('imprint-screen').classList.add('hidden');
+  document.getElementById('start-menu').classList.remove('hidden');
+}
+
+
 let isMuted = false;
 
 function toggleMute() {
