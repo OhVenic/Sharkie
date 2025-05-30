@@ -41,6 +41,7 @@ class World {
   }
 
   addEnemies() {
+    this.endboss = new Endboss(this);
     this.level.enemies = [];
     this.level.enemies.push(
       new PufferFishGreen(this),
@@ -56,7 +57,7 @@ class World {
       new PufferFishPurple(this),
       new PufferFishPurple(this),
       new PufferFishPurple(this),
-      new Endboss(this),
+      this.endboss,
       new JellyFishYellow(this),
       new JellyFishYellow(this),
       new JellyFishYellow(this),
@@ -98,27 +99,22 @@ class World {
     this.level.coins = this.level.coins.filter((coin) => {
       if (this.character.isColliding(coin)) {
         this.collectedCoins += 20;
-        this.coinSound.currentTime = 0; // Reset sound to start
+        this.coinSound.currentTime = 0;
         this.coinSound.play();
         if (this.collectedCoins > 100) this.collectedCoins = 100;
         this.coinBar.setPercentage(this.collectedCoins);
-        return false; // entfernt dieses Objekt
-      }
-      return true;
-    });
+        return false; 
+      } return true;});
 
     this.level.poisonFlasks = this.level.poisonFlasks.filter((flask) => {
       if (this.character.isColliding(flask)) {
         this.collectedPoison += 20;
-        this.poisonSound.currentTime = 0; // Reset sound to start
+        this.poisonSound.currentTime = 0; 
         this.poisonSound.play();
         if (this.collectedPoison > 100) this.collectedPoison = 100;
         this.poisonBar.setPercentage(this.collectedPoison);
         return false;
-      }
-      return true;
-    });
-  }
+      } return true;});}
 
   addHealth() {
     const now = Date.now();
@@ -147,20 +143,15 @@ class World {
                 this.level.enemies.splice(enemyIndex, 1);
               });
             } else if (enemy instanceof Endboss) {
-              enemy.takeHit(); // nur ein Leben abziehen
+              enemy.takeHit();
             } else {
               this.enemyDeadSound.currentTime = 0; // Reset sound to start
               this.enemyDeadSound.play();
               enemy.die(() => {
                 this.level.enemies.splice(enemyIndex, 1);
-              });
-            }
+              });}
             this.throwableObjects.splice(bubbleIndex, 1);
-          }
-        });
-      });
-    }, 1000 / 30);
-  }
+          }});});}, 1000 / 30);}
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
@@ -184,7 +175,6 @@ class World {
 
     this.ctx.translate(-this.camera_x, 0);
 
-    // Draw() wird immer wieder aufgerufen, um die Animation zu starten
     let self = this;
     requestAnimationFrame(function () {
       self.draw();
@@ -203,7 +193,6 @@ class World {
     const moveUp = this.keyboard.UP;
     const moveDown = this.keyboard.DOWN;
     const shouldRotate = isCharacter && (moveUp || moveDown);
-    mo.drawFrame(this.ctx);
 
     if (shouldRotate) {
       this.rotateCharacter(mo);
@@ -236,12 +225,6 @@ class World {
 
     if (mo.otherDirection) this.ctx.scale(-1, 1);
 
-    this.ctx.drawImage(
-      mo.img,
-      -mo.width / 2,
-      -mo.height / 2,
-      mo.width,
-      mo.height
-    );
+    this.ctx.drawImage(mo.img, -mo.width / 2, -mo.height / 2, mo.width,mo.height);
   }
 }

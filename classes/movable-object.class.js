@@ -26,24 +26,24 @@ class MovableObject extends DrawableObject {
   }
 
   moveJellyFish() {
-    let baseY = this.y; // Ausgangsposition merken
+    let baseY = this.y;
     let t = 0;
 
     setInterval(() => {
            if (!gameIsRunning) return;
       this.x -= this.speed;
-      this.y = baseY + Math.sin(t) * 10 + 20; // Amplitude auf 8 (statt 3)
-      t += 0.03; // Frequenz bleibt gleich
+      this.y = baseY + Math.sin(t) * 10 + 20;
+      t += 0.03; 
     }, 1000 / 60);
   }
 
   isColliding(mo) {
     return (
-      this.x + this.width - this.offset.right > mo.x + mo.offset.left && // rechte Kante von this > linke Kante von mo
-      this.y + this.height - this.offset.bottom > mo.y + mo.offset.top && // untere Kante von this > obere Kante von mo
-      this.x + this.offset.left < mo.x + mo.width - mo.offset.right && // linke Kante von this < rechte Kante von mo
+      this.x + this.width - this.offset.right > mo.x + mo.offset.left && 
+      this.y + this.height - this.offset.bottom > mo.y + mo.offset.top && 
+      this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
       this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
-    ); // obere Kante von this < untere Kante von mo
+    );
   }
 
   hit(type = "normal") {
@@ -55,7 +55,7 @@ class MovableObject extends DrawableObject {
       this.life = 0;
     } else {
       this.lastHit = new Date().getTime();
-      this.lastHitType = type; // Speichert z. B. "jelly"
+      this.lastHitType = type; 
     }
   }
 

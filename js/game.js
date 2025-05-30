@@ -1,7 +1,7 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let gameIsRunning = true;
+let gameIsRunning = false;
 let intervals = [];
 let backgroundMusic = new Audio('audio/background-music.mp3');
 backgroundMusic.loop = true;
@@ -11,19 +11,37 @@ window.onload = () => {
   document.getElementById('start-menu').classList.remove('hidden');
   document.getElementById('controls-screen').classList.add('hidden');
   document.getElementById('canvas').classList.add('hidden');
+   const btnLeft = document.getElementById('btn-left');
+  const btnRight = document.getElementById('btn-right');
+  const btnUp = document.getElementById('btn-up');
+  const btnDown = document.getElementById('btn-down');
+  const btnBubble = document.getElementById('btn-bubble');
+  const btnFin = document.getElementById('btn-fin');
+  const btnHeal = document.getElementById('btn-heal');
+
+  setupControlButton(btnLeft, 'LEFT');
+  setupControlButton(btnRight, 'RIGHT');
+  setupControlButton(btnUp, 'UP');
+  setupControlButton(btnDown, 'DOWN');
+  setupControlButton(btnBubble, 'D');
+  setupControlButton(btnFin, 'SPACE');
+  setupControlButton(btnHeal, 'E');
 };
 
 function startGame() {
   document.getElementById('start-menu').classList.add('hidden');
   document.getElementById('canvas').classList.remove('hidden');
+  document.getElementById('game-container').classList.remove('hidden');
   backgroundMusic.play();
   init();
 }
 
 function init() {
+  gameIsRunning = true;
 canvas = document.getElementById("canvas")
   keyboard = new Keyboard();
 world = new World(canvas, keyboard);
+
 }
 
 function showControls() {
@@ -41,9 +59,10 @@ let isMuted = false;
 function toggleMute() {
   isMuted = !isMuted;
   document.getElementById('mute-btn').innerText = isMuted ? '🔇' : '🔊';
+    const endbossSound = world?.endboss?.winSound;
 
   // Add all Sounds here
-  [backgroundMusic, world?.character?.swimSound, world?.character?.bubbleSound, world?.character?.finSound, world?.character?.damageSound, world?.coinSound, world?.poisonSound, world?.healSound, world?.enemyDeadSound]
+  [backgroundMusic, world?.character?.swimSound, world?.character?.bubbleSound, world?.character?.finSound, world?.character?.damageSound, world?.coinSound, world?.poisonSound, world?.healSound, world?.enemyDeadSound,  world?.endboss?.winSound]
     .forEach(sound => {
       if (sound) sound.muted = isMuted;
     });
@@ -78,6 +97,23 @@ function restartGame() {
   if (!isMuted) backgroundMusic.play();
 }
 
+function checkOrientation() {
+  const overlay = document.getElementById('airplane-mode-overlay');
+  const mobileControls = document.getElementById('mobile-controls');
+  const isPortrait = window.innerHeight > window.innerWidth;
+  const isWideEnough = window.innerWidth >= 1000;
+
+  if (isPortrait) {
+    overlay.classList.remove('hidden');
+    mobileControls.style.display = 'none';
+  } else {
+    overlay.classList.add('hidden');
+    mobileControls.style.display = isWideEnough ? 'none' : 'flex';
+  }
+}
+
+window.addEventListener('load', checkOrientation);
+window.addEventListener('resize', checkOrientation);
 
 window.addEventListener("keydown", (event) => { 
     const key = event.keyCode
@@ -112,7 +148,7 @@ window.addEventListener("keyup", (event) => {
       const key = event.keyCode;
 
   if ([32, 37, 38, 39, 40, 68, 69].includes(key)) {
-    event.preventDefault(); // optional hier auch
+    event.preventDefault();
   }
 
     if(event.keyCode == 39) {
@@ -137,3 +173,21 @@ window.addEventListener("keyup", (event) => {
         keyboard.E = false;
     }
 })
+
+function simulateKeyPress(flagName) {
+  keyboard[flagName] = true;
+}
+
+function simulateKeyRelease(flagName) {
+  keyboard[flagName] = false;
+}
+
+function setupControlButton(button, flagName) {
+  if (!button) return;
+  button.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    simulateKeyPress(flagName);
+  });
+  button.addEventListener('pointerup', () => simulateKeyRelease(flagName));
+  button.addEventListener('pointerleave', () => simulateKeyRelease(flagName)); // Finger/Maus geht vom Button
+}

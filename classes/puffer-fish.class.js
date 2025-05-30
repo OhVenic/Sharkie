@@ -55,7 +55,7 @@ class Pufferfish extends MovableObject {
     let currentImageIndex = 0;
     let transitionRunning = false;
     this.moveLeft();
-
+ 
     setInterval(() => {
       if (this.dead) return
       if (this.isColliding(this.world.character) && !transitionRunning) {
@@ -64,21 +64,14 @@ class Pufferfish extends MovableObject {
         currentImageIndex = 0;
       }
 
-      
       this.img = this.imageCache[currentImages[currentImageIndex]];
       currentImageIndex++;
 
-     
       if (currentImageIndex >= currentImages.length) {
         if (transitionRunning) {
         
           currentImages = this.IMAGES_BUBBLESWIM;
           currentImageIndex = 0;
         } else {
-     
-          currentImageIndex = 0;
-        }
-      }
-    }, 1000 / 8);
-  }
-}
+          currentImageIndex = 0;}}
+        }, 1000 / 8);}}

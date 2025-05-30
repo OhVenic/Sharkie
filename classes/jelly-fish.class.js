@@ -59,8 +59,8 @@ class JellyFish extends Pufferfish {
       i++;
       if (i >= this.IMAGES_DEAD.length) {
         clearInterval(deathInterval);
-        if (callback) callback(); // Entfernen nach Animation
+        if (callback) callback();
       }
-    }, 1000 / 5); // 100ms pro Frame
+    }, 1000 / 5);
   }
 }

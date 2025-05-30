@@ -144,55 +144,36 @@ class Character extends MovableObject {
     intervals.push(
       setInterval(() => {
         if (!gameIsRunning) return;
-        if (
-          this.world.keyboard.RIGHT &&
-          this.x < this.world.level.level_end_x
-        ) {
+        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
           this.x += this.speed;
           this.otherDirection = false;
           this.registerAction();
-          this.playSwimSound();
-        }
+          this.playSwimSound();}
 
         if (this.world.keyboard.LEFT && this.x > -600) {
           this.x -= this.speed;
           this.otherDirection = true;
           this.registerAction();
-          this.playSwimSound();
-        }
+          this.playSwimSound();}
 
         if (this.world.keyboard.UP && this.y > -70) {
           this.y -= this.speed;
           this.registerAction();
-          this.playSwimSound();
-        }
+          this.playSwimSound();}
 
-        if (
-          this.world.keyboard.DOWN &&
-          this.y < this.world.canvas.height - this.height
-        ) {
+        if (this.world.keyboard.DOWN && this.y < this.world.canvas.height - this.height) {
           this.y += this.speed;
           this.registerAction();
-          this.playSwimSound();
-        }
+          this.playSwimSound();}
 
-        let moving =
-          this.world.keyboard.RIGHT ||
-          this.world.keyboard.LEFT ||
-          this.world.keyboard.UP ||
-          this.world.keyboard.DOWN;
-
+        let moving =this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN;
         if (!moving && !this.swimSound.paused) {
           this.swimSound.pause();
-          this.swimSound.currentTime = 0;
-        }
+          this.swimSound.currentTime = 0;}
 
         this.world.camera_x = -this.x + 80;
-      }, 1000 / 60)
-    );
-
-    this.animateSharkie();
-  }
+      }, 1000 / 60));
+    this.animateSharkie();}
 
   animateSharkie() {
     intervals.push(
@@ -210,12 +191,7 @@ class Character extends MovableObject {
         } else if (this.isHurt()) {
           this.playAnimation(this.IMAGES_HURT);
         } else if (this.isAttacking) {
-        } else if (
-          this.world.keyboard.RIGHT ||
-          this.world.keyboard.LEFT ||
-          this.world.keyboard.UP ||
-          this.world.keyboard.DOWN
-        ) {
+        } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN) {
           this.playAnimation(this.IMAGES_WALKING);
         } else if (this.longIdle()) {
           this.playAnimation(this.IMAGES_LONG_IDLE);
@@ -253,19 +229,9 @@ class Character extends MovableObject {
       if (this.currentImage >= this.IMAGES_ATTACK_BUBBLE.length) {
         clearInterval(interval);
 
-        const bubble = new ThrowableObject(
-          this.x + 180,
-          this.y + 110,
-          10,
-          this.world,
-          "bubble"
-        );
+        const bubble = new ThrowableObject(this.x + 180, this.y + 110, 10, this.world, "bubble");
         this.world.throwableObjects.push(bubble);
-
-        this.isAttacking = false;
-      }
-    }, 100);
-  }
+        this.isAttacking = false;}}, 100);}
 
   startFinAttack() {
     if (!gameIsRunning) return;
@@ -283,27 +249,10 @@ class Character extends MovableObject {
       if (this.currentImage >= this.IMAGES_ATTACK_FIN.length) {
         clearInterval(interval);
         if (this.otherDirection) {
-          finHitbox = new ThrowableObject(
-            this.x - 10,
-            this.y + 110,
-            0,
-            this.world,
-            "fin"
-          );
+          finHitbox = new ThrowableObject(this.x - 10, this.y + 110, 0, this.world, "fin");
           this.world.throwableObjects.push(finHitbox);
           this.isAttacking = false;
         } else {
-          finHitbox = new ThrowableObject(
-            this.x + 200,
-            this.y + 110,
-            0,
-            this.world,
-            "fin"
-          );
+          finHitbox = new ThrowableObject(this.x + 200, this.y + 110, 0, this.world, "fin");
           this.world.throwableObjects.push(finHitbox);
-          this.isAttacking = false;
-        }
-      }
-    }, 100);
-  }
-}
+          this.isAttacking = false;}}}, 100);}}

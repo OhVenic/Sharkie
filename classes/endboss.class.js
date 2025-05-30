@@ -85,28 +85,20 @@ class Endboss extends MovableObject {
     this.animationInterval = intervals.push(
       setInterval(() => {
         if (!gameIsRunning) return;
-
         if (this.world.character.x >= 2350 && !this.hadFirstContact) {
           this.hadFirstContact = true;
-          this.startSpawning();
-        }
-
+          this.startSpawning();}
         if (this.spawningDone && !this.dead) {
           this.playAnimation(
             this.isHurt() ? this.IMAGES_HURT : this.IMAGES_WALKING
-          );
-        }
-
+          );}
         if (this.dead) {
           this.playAnimation(this.IMAGES_DEAD);
           showGameWon();
           this.winSound.currentTime = 0;
           this.winSound.play();
           this.dead = false;
-        }
-      }, 150)
-    );
-  }
+        }}, 150));}
 
   startSpawning() {
     let i = 0;
@@ -125,8 +117,8 @@ class Endboss extends MovableObject {
     if (this.dead || !this.spawningDone) return;
     this.health--;
     this.setHurt();
-      this.world.enemyDeadSound.currentTime = 0;
-  this.world.enemyDeadSound.play();
+    this.world.enemyDeadSound.currentTime = 0;
+    this.world.enemyDeadSound.play();
 
     if (this.health <= 0) {
       this.die();
@@ -145,8 +137,8 @@ class Endboss extends MovableObject {
   die() {
     this.dead = true;
     this.speed = 0;
-      this.world.enemyDeadSound.currentTime = 0;
-  this.world.enemyDeadSound.play();
+    this.world.enemyDeadSound.currentTime = 0;
+    this.world.enemyDeadSound.play();
 
     setTimeout(() => {
       this.world.level.enemies = this.world.level.enemies.filter(

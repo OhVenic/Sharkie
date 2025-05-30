@@ -5,7 +5,7 @@ class JellyFishYellow extends JellyFish {
 
     constructor(world) {
   super().loadImage("img/2.Enemy/2 Jelly fish/Regular damage/Yellow 1.png");
-    this.world = world; // Set the world property to the passed world object
+    this.world = world;
        this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_POISONOUS);
     this.loadImages(this.IMAGES_DEAD);

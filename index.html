@@ -43,18 +43,44 @@
     <p>D is only possible when you have picked up poison flasks</p>
     <p>Trade coins for health with E</p>
     </div>
-    <button onclick="hideControls()">Back</button>
+    <button onclick="hideControls()" class="controls-btn">Back</button>
   </div>
 <h1 class="mobile-h1">Sharkie</h1>
-<button id="mute-btn" onclick="toggleMute()">🔊</button>
-  <canvas width="720" height="480" id="canvas" class="hidden"></canvas>
-  <div id="game-over-screen" class="hidden">
-  <img src="img/6.Botones/Tittles/Game Over/Recurso 12.png" class="game-over-title">
-  <img src="img/6.Botones/Try again/Recurso 17.png" onclick="restartGame()" class="try-again-button">
+<div class="center">
+<div class="game-container hidden" id="game-container">
+  <canvas id="canvas" width="720" height="480"></canvas>
+  <button id="mute-btn" onclick="toggleMute()">🔊</button>
+
+  <div id="game-over-screen" class="hidden screen-overlay">
+    <img src="img/6.Botones/Tittles/Game Over/Recurso 12.png" class="game-over-title">
+    <img src="img/6.Botones/Try again/Recurso 17.png" onclick="restartGame()" class="try-again-button">
+  </div>
+
+  <div id="game-won-screen" class="hidden screen-overlay">
+    <img src="img/6.Botones/Tittles/You win/Recurso 20.png" class="game-won-title">
+    <img src="img/6.Botones/Try again/Recurso 17.png" onclick="restartGame()" class="try-again-win-button">
+  </div>
+  <div id="mobile-controls">
+  <div class="control-left">
+    <div id="btn-left" class="control-btn">←</div>
+    <div class="up-down">
+      <div id="btn-up" class="control-btn">↑</div>
+      <div id="btn-down" class="control-btn">↓</div>
+    </div>
+    <div id="btn-right" class="control-btn">→</div>
+  </div>
+
+  <div class="control-right">
+    <div id="btn-heal" class="control-btn">❤️</div>
+    <div id="btn-bubble" class="control-btn">🫧</div>
+    <div id="btn-fin" class="control-btn">🦈</div>
+  </div>
 </div>
-<div id="game-won-screen" class="hidden">
-  <img src="img/6.Botones/Tittles/You win/Mesa de trabajo 1.png" class="game-won-title">
-  <img src="img/6.Botones/Try again/Recurso 17.png" onclick="restartGame()" class="try-again-win-button">
+</div>
+</div>
+<div id="airplane-mode-overlay" class="hidden">
+  <h2>Please rotate your device</h2>
+  <p>The game only works in landscape mode or larger screens.</p>
 </div>
 </body>
 </html>
