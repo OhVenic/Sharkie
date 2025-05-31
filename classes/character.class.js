@@ -1,3 +1,7 @@
+/**
+ * Represents the main character (Sharkie) in the game.
+ * Controls movement, animations, attack behavior, and sound handling.
+ */
 class Character extends MovableObject {
   height = 200; // Set the height of the character
   width = 220; // Set the width of the character
@@ -10,6 +14,7 @@ class Character extends MovableObject {
   coins = 0;
   poisonFlasks = 0;
 
+  // Animation image arrays for different states
   IMAGES_IDLE = [
     "img/1.Sharkie/1.IDLE/1.png",
     "img/1.Sharkie/1.IDLE/2.png",
@@ -38,7 +43,7 @@ class Character extends MovableObject {
     "img/1.Sharkie/2.Long_IDLE/I10.png",
     "img/1.Sharkie/2.Long_IDLE/I11.png",
     "img/1.Sharkie/2.Long_IDLE/I12.png",
-    "img/1.Sharkie/2.Long_IDLE/I13.png",  
+    "img/1.Sharkie/2.Long_IDLE/I13.png",
     "img/1.Sharkie/2.Long_IDLE/I14.png",
   ];
 
@@ -109,6 +114,10 @@ class Character extends MovableObject {
     right: 35,
   };
 
+   /**
+   * Initializes the character by loading images and audio,
+   * setting volume levels and starting the animation loop.
+   */
   constructor() {
     super().loadImage("img/1.Sharkie/1.IDLE/1.png");
     this.gameOverTriggered = false;
@@ -133,6 +142,9 @@ class Character extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Plays the swimming sound effect if it's not already playing.
+   */
   playSwimSound() {
     if (this.swimSound.paused) {
       this.swimSound.currentTime = 0;
@@ -140,41 +152,65 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Animates character movement and updates position and camera.
+   * Also plays swim sound and stops it when idle.
+   */
   animate() {
     intervals.push(
       setInterval(() => {
         if (!gameIsRunning) return;
-        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+        if (
+          this.world.keyboard.RIGHT &&
+          this.x < this.world.level.level_end_x
+        ) {
           this.x += this.speed;
           this.otherDirection = false;
           this.registerAction();
-          this.playSwimSound();}
+          this.playSwimSound();
+        }
 
         if (this.world.keyboard.LEFT && this.x > -600) {
           this.x -= this.speed;
           this.otherDirection = true;
           this.registerAction();
-          this.playSwimSound();}
+          this.playSwimSound();
+        }
 
         if (this.world.keyboard.UP && this.y > -70) {
           this.y -= this.speed;
           this.registerAction();
-          this.playSwimSound();}
+          this.playSwimSound();
+        }
 
-        if (this.world.keyboard.DOWN && this.y < this.world.canvas.height - this.height) {
+        if (
+          this.world.keyboard.DOWN &&
+          this.y < this.world.canvas.height - this.height
+        ) {
           this.y += this.speed;
           this.registerAction();
-          this.playSwimSound();}
+          this.playSwimSound();
+        }
 
-        let moving =this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN;
+        let moving =
+          this.world.keyboard.RIGHT ||
+          this.world.keyboard.LEFT ||
+          this.world.keyboard.UP ||
+          this.world.keyboard.DOWN;
         if (!moving && !this.swimSound.paused) {
           this.swimSound.pause();
-          this.swimSound.currentTime = 0;}
+          this.swimSound.currentTime = 0;
+        }
 
         this.world.camera_x = -this.x + 80;
-      }, 1000 / 60));
-    this.animateSharkie();}
+      }, 1000 / 60)
+    );
+    this.animateSharkie();
+  }
 
+  /**
+   * Controls the character's animation depending on current status (dead, hurt, idle, etc.).
+   */
   animateSharkie() {
     intervals.push(
       setInterval(() => {
@@ -191,7 +227,13 @@ class Character extends MovableObject {
         } else if (this.isHurt()) {
           this.playAnimation(this.IMAGES_HURT);
         } else if (this.isAttacking) {
-        } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.DOWN) {
+          // Do nothing; attack animations handled separately
+        } else if (
+          this.world.keyboard.RIGHT ||
+          this.world.keyboard.LEFT ||
+          this.world.keyboard.UP ||
+          this.world.keyboard.DOWN
+        ) {
           this.playAnimation(this.IMAGES_WALKING);
         } else if (this.longIdle()) {
           this.playAnimation(this.IMAGES_LONG_IDLE);
@@ -202,15 +244,25 @@ class Character extends MovableObject {
     );
   }
 
+  /**
+   * Checks if the character has been idle for more than 5 seconds.
+   * @returns {boolean} True if idle for over 5 seconds.
+   */
   longIdle() {
     let now = Date.now();
     return now - this.lastActionTime > 5000;
   }
 
+  /**
+   * Updates the timestamp of the last performed action.
+   */
   registerAction() {
     this.lastActionTime = Date.now(); // Update the last action time
   }
 
+  /**
+   * Initiates the bubble attack animation and launches a bubble if enough poison is collected.
+   */
   startBubbleAttack() {
     if (!gameIsRunning) return;
     if (this.isAttacking) return;
@@ -229,30 +281,43 @@ class Character extends MovableObject {
       if (this.currentImage >= this.IMAGES_ATTACK_BUBBLE.length) {
         clearInterval(interval);
 
-        const bubble = new ThrowableObject(this.x + 180, this.y + 110, 10, this.world, "bubble");
+        const bubble = new ThrowableObject(
+          this.x + 180,
+          this.y + 110,
+          10,
+          this.world,
+          "bubble"
+        );
         this.world.throwableObjects.push(bubble);
-        this.isAttacking = false;}}, 100);}
+        this.isAttacking = false;
+      }
+    }, 100);
+  }
 
-  startFinAttack() {
-    if (!gameIsRunning) return;
-    if (this.isAttacking) return;
-    this.lastActionTime = Date.now();
-    this.isAttacking = true;
-    this.currentImage = 0;
-    let finHitbox;
-    this.finSound.currentTime = 0;
-    this.finSound.play();
+  /**
+   * Initiates the fin slap attack animation and spawns a hitbox after the animation ends.
+   */
+startFinAttack() {
+  if (!gameIsRunning || this.isAttacking) return;
 
-    let interval = setInterval(() => {
-      this.playAnimation(this.IMAGES_ATTACK_FIN);
+  this.lastActionTime = Date.now();
+  this.isAttacking = true;
+  this.currentImage = 0;
+  this.finSound.currentTime = 0;
+  this.finSound.play();
 
-      if (this.currentImage >= this.IMAGES_ATTACK_FIN.length) {
-        clearInterval(interval);
-        if (this.otherDirection) {
-          finHitbox = new ThrowableObject(this.x - 10, this.y + 110, 0, this.world, "fin");
-          this.world.throwableObjects.push(finHitbox);
-          this.isAttacking = false;
-        } else {
-          finHitbox = new ThrowableObject(this.x + 200, this.y + 110, 0, this.world, "fin");
-          this.world.throwableObjects.push(finHitbox);
-          this.isAttacking = false;}}}, 100);}}
+  const finX = this.otherDirection ? this.x - 10 : this.x + 200;
+  const finY = this.y + 110;
+
+  const interval = setInterval(() => {
+    this.playAnimation(this.IMAGES_ATTACK_FIN);
+
+    if (this.currentImage >= this.IMAGES_ATTACK_FIN.length) {
+      clearInterval(interval);
+      const finHitbox = new ThrowableObject(finX, finY, 0, this.world, "fin");
+      this.world.throwableObjects.push(finHitbox);
+      this.isAttacking = false;
+    }
+  }, 100);
+}
+}

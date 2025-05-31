@@ -1,3 +1,6 @@
+/**
+ * Represents the main game world, including the character, enemies, items, and rendering logic.
+ */
 class World {
   character = new Character();
   level = createLevel1();
@@ -13,6 +16,11 @@ class World {
   collectedPoison = 0;
   lastHealthTime = 0;
 
+  /**
+   * Creates the game world and initializes canvas, keyboard, and game objects.
+   * @param {HTMLCanvasElement} canvas - The canvas element for rendering.
+   * @param {Object} keyboard - The keyboard input handler.
+   */
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
@@ -35,53 +43,47 @@ class World {
     }, 1000 / 60);
   }
 
+  /**
+   * Assigns the current world to the character and adds enemies.
+   */
   setWorld() {
     this.character.world = this;
     this.addEnemies();
   }
 
+  /**
+   * Adds a set of enemies including the Endboss to the level.
+   */
   addEnemies() {
     this.endboss = new Endboss(this);
-    this.level.enemies = [];
-    this.level.enemies.push(
-      new PufferFishGreen(this),
-      new PufferFishGreen(this),
-      new PufferFishGreen(this),
-      new PufferFishGreen(this),
-      new PufferFishLightRose(this),
-      new PufferFishLightRose(this),
-      new PufferFishLightRose(this),
-      new PufferFishLightRose(this),
-      new PufferFishPurple(this),
-      new PufferFishPurple(this),
-      new PufferFishPurple(this),
-      new PufferFishPurple(this),
-      new PufferFishPurple(this),
+    this.level.enemies = [
+      new PufferFishGreen(this), new PufferFishGreen(this),
+      new PufferFishGreen(this), new PufferFishGreen(this),
+      new PufferFishLightRose(this), new PufferFishLightRose(this),
+      new PufferFishLightRose(this), new PufferFishLightRose(this),
+      new PufferFishPurple(this), new PufferFishPurple(this),
+      new PufferFishPurple(this), new PufferFishPurple(this), new PufferFishPurple(this),
       this.endboss,
-      new JellyFishYellow(this),
-      new JellyFishYellow(this),
-      new JellyFishYellow(this),
-      new JellyFishLila(this),
-      new JellyFishLila(this),
-      new JellyFishLila(this)
-    );
+      new JellyFishYellow(this), new JellyFishYellow(this), new JellyFishYellow(this),
+      new JellyFishLila(this), new JellyFishLila(this), new JellyFishLila(this)
+    ];
   }
 
+  /**
+   * Checks if the player triggered any throwable object attacks or healing.
+   */
   checkThrowObjects() {
     setInterval(() => {
       if (!gameIsRunning) return;
-      if (this.keyboard.D && !this.character.isAttacking) {
-        this.character.startBubbleAttack();
-      }
-      if (this.keyboard.SPACE && !this.character.isAttacking) {
-        this.character.startFinAttack();
-      }
-      if (this.keyboard.E && !this.character.isAttacking) {
-        this.addHealth();
-      }
+      if (this.keyboard.D && !this.character.isAttacking) this.character.startBubbleAttack();
+      if (this.keyboard.SPACE && !this.character.isAttacking) this.character.startFinAttack();
+      if (this.keyboard.E && !this.character.isAttacking) this.addHealth();
     }, 1000 / 60);
   }
 
+  /**
+   * Checks for collisions between the character and all enemies.
+   */
   checkCollisions() {
     this.level.enemies.forEach((enemy) => {
       intervals.push(setInterval(() => {
@@ -95,98 +97,129 @@ class World {
     });
   }
 
-  checkCollectibles() {
-    this.level.coins = this.level.coins.filter((coin) => {
-      if (this.character.isColliding(coin)) {
-        this.collectedCoins += 20;
-        this.coinSound.currentTime = 0;
-        this.coinSound.play();
-        if (this.collectedCoins > 100) this.collectedCoins = 100;
-        this.coinBar.setPercentage(this.collectedCoins);
-        return false; 
-      } return true;});
+  /**
+   * Checks for collection of coins and poison flasks by the character.
+   */
+checkCollectibles() {
+  this.collectCoins();
+  this.collectPoisonFlasks();
+}
 
-    this.level.poisonFlasks = this.level.poisonFlasks.filter((flask) => {
-      if (this.character.isColliding(flask)) {
-        this.collectedPoison += 20;
-        this.poisonSound.currentTime = 0; 
-        this.poisonSound.play();
-        if (this.collectedPoison > 100) this.collectedPoison = 100;
-        this.poisonBar.setPercentage(this.collectedPoison);
-        return false;
-      } return true;});}
+collectCoins() {
+  this.level.coins = this.level.coins.filter((coin) => {
+    if (this.character.isColliding(coin)) {
+      this.collectedCoins += 20;
+      if (this.collectedCoins > 100) this.collectedCoins = 100;
+      this.coinSound.currentTime = 0;
+      this.coinSound.play();
+      this.coinBar.setPercentage(this.collectedCoins);
+      return false;
+    }
+    return true;
+  });
+}
 
+collectPoisonFlasks() {
+  this.level.poisonFlasks = this.level.poisonFlasks.filter((flask) => {
+    if (this.character.isColliding(flask)) {
+      this.collectedPoison += 20;
+      if (this.collectedPoison > 100) this.collectedPoison = 100;
+      this.poisonSound.currentTime = 0;
+      this.poisonSound.play();
+      this.poisonBar.setPercentage(this.collectedPoison);
+      return false;
+    }
+    return true;
+  });
+}
+
+  /**
+   * Adds health to the character if enough coins are available.
+   */
   addHealth() {
     const now = Date.now();
-    if (now - this.lastHealthTime < 1000) return; // Prevent spamming
-    if (this.lifeBar.percentage === 100) return;
-    if (this.collectedCoins < 20) return;
+    if (now - this.lastHealthTime < 1000 || this.lifeBar.percentage === 100 || this.collectedCoins < 20) return;
     this.character.life += 20;
     this.collectedCoins -= 20;
     this.lifeBar.setPercentage(this.character.life);
     this.coinBar.setPercentage(this.collectedCoins);
     this.lastHealthTime = now;
-    this.healSound.currentTime = 0; // Reset sound to start
+    this.healSound.currentTime = 0;
     this.healSound.play();
   }
 
-  checkEnemyHits() {
-    setInterval(() => {
-      if (!gameIsRunning) return;
-      this.level.enemies.forEach((enemy, enemyIndex) => {
-        this.throwableObjects.forEach((bubble, bubbleIndex) => {
-          if (bubble.isColliding(enemy) && !enemy.dead) {
-            if (enemy instanceof JellyFish) {
-              this.enemyDeadSound.currentTime = 0; // Reset sound to start
-              this.enemyDeadSound.play();
-              enemy.jellyFishDie(() => {
-                this.level.enemies.splice(enemyIndex, 1);
-              });
-            } else if (enemy instanceof Endboss) {
-              enemy.takeHit();
-            } else {
-              this.enemyDeadSound.currentTime = 0; // Reset sound to start
-              this.enemyDeadSound.play();
-              enemy.die(() => {
-                this.level.enemies.splice(enemyIndex, 1);
-              });}
-            this.throwableObjects.splice(bubbleIndex, 1);
-          }});});}, 1000 / 30);}
+  /**
+   * Checks if any throwable object has hit an enemy.
+   */
+checkEnemyHits() {
+  setInterval(() => {
+    if (!gameIsRunning) return;
 
+    this.level.enemies.forEach((enemy, enemyIndex) => {
+      this.throwableObjects.forEach((bubble, bubbleIndex) => {
+        if (bubble.isColliding(enemy) && !enemy.dead) {
+          this.handleEnemyHit(enemy, enemyIndex);
+          this.throwableObjects.splice(bubbleIndex, 1);
+        }
+      });
+    });
+  }, 1000 / 30);
+}
+
+handleEnemyHit(enemy, enemyIndex) {
+  if (enemy instanceof JellyFish) {
+    this.playEnemyDeath(() => enemy.jellyFishDie(() => {
+      this.level.enemies.splice(enemyIndex, 1);
+    }));
+  } else if (enemy instanceof Endboss) {
+    enemy.takeHit();
+  } else {
+    this.playEnemyDeath(() => enemy.die(() => {
+      this.level.enemies.splice(enemyIndex, 1);
+    }));
+  }
+}
+
+playEnemyDeath(callback) {
+  this.enemyDeadSound.currentTime = 0;
+  this.enemyDeadSound.play();
+  callback();
+}
+
+  /**
+   * Draws all objects on the canvas and updates camera.
+   */
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.poisonFlasks);
     this.addObjectsToMap(this.level.coins);
     this.ctx.translate(-this.camera_x, 0);
-    // SPACE FOR FIXED OBJECTS
     this.addToMap(this.lifeBar);
     this.addToMap(this.poisonBar);
     this.addToMap(this.coinBar);
-    // SPACE END FOR FIXED OBJECTS
     this.ctx.translate(this.camera_x, 0);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
-    this.throwableObjects = this.throwableObjects.filter(
-      (obj) => !obj.markedForDeletion
-    );
+    this.throwableObjects = this.throwableObjects.filter(obj => !obj.markedForDeletion);
     this.addObjectsToMap(this.throwableObjects);
-
     this.ctx.translate(-this.camera_x, 0);
-
-    let self = this;
-    requestAnimationFrame(function () {
-      self.draw();
-    });
+    requestAnimationFrame(() => this.draw());
   }
 
+  /**
+   * Adds an array of drawable objects to the canvas.
+   * @param {DrawableObject[]} objects - Array of objects to draw.
+   */
   addObjectsToMap(objects) {
-    objects.forEach((o) => {
-      this.addToMap(o);
-    });
+    objects.forEach((o) => this.addToMap(o));
   }
 
+  /**
+   * Adds a single drawable object to the canvas with optional rotation/flip.
+   * @param {DrawableObject} mo - The object to draw.
+   */
   addToMap(mo) {
     this.ctx.save();
     const isCharacter = mo instanceof Character;
@@ -206,12 +239,20 @@ class World {
     this.ctx.restore();
   }
 
+  /**
+   * Flips a drawable object's image horizontally.
+   * @param {DrawableObject} mo - The object to flip.
+   */
   flipImage(mo) {
     this.ctx.translate(mo.x + mo.width, 0);
     this.ctx.scale(-1, 1);
     this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
   }
 
+  /**
+   * Rotates the character image when moving up or down.
+   * @param {DrawableObject} mo - The character object to rotate.
+   */
   rotateCharacter(mo) {
     let angle = this.keyboard.UP ? -15 : 15;
     if (mo.otherDirection) angle = -angle;
@@ -225,6 +266,6 @@ class World {
 
     if (mo.otherDirection) this.ctx.scale(-1, 1);
 
-    this.ctx.drawImage(mo.img, -mo.width / 2, -mo.height / 2, mo.width,mo.height);
+    this.ctx.drawImage(mo.img, -mo.width / 2, -mo.height / 2, mo.width, mo.height);
   }
 }

@@ -1,30 +1,51 @@
+/**
+ * Base class for all drawable objects on the canvas.
+ */
 class DrawableObject {
   img;
-  imageCache = [];
+  imageCache = {}; // Map of cached images
   x = 50;
   y = 230;
-  currentImage = 0; // Index of the current image in the array
   height = 150;
   width = 150;
+  currentImage = 0;
 
+  /**
+   * Loads a single image and sets it as the current image.
+   * @param {string} path - Path to the image file
+   */
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
   }
 
+  /**
+   * Loads an array of images into the image cache.
+   * @param {string[]} arr - Array of image paths
+   */
   loadImages(arr) {
     arr.forEach((path) => {
-      let img = new Image();
+      const img = new Image();
       img.src = path;
       this.imageCache[path] = img;
     });
   }
 
+  /**
+   * Draws the object on the canvas.
+   * @param {CanvasRenderingContext2D} ctx
+   */
   draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    if (this.img) {
+      ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    }
   }
 
-    drawFrame(ctx) {
+  /**
+   * Draws the collision frame if the object is one of the specified classes.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  drawFrame(ctx) {
     if (
       this instanceof Character ||
       this instanceof Pufferfish ||
@@ -33,14 +54,16 @@ class DrawableObject {
       this instanceof Coin ||
       this instanceof PoisonFlask
     ) {
+      const offset = this.offset || { top: 0, right: 0, bottom: 0, left: 0 };
+
       ctx.beginPath();
-      ctx.lineWidth = "3";
+      ctx.lineWidth = 3;
       ctx.strokeStyle = "red";
       ctx.rect(
-        this.x + this.offset.left,
-        this.y + this.offset.top,
-        this.width - this.offset.left - this.offset.right,
-        this.height - this.offset.top - this.offset.bottom
+        this.x + offset.left,
+        this.y + offset.top,
+        this.width - offset.left - offset.right,
+        this.height - offset.top - offset.bottom
       );
       ctx.stroke();
     }

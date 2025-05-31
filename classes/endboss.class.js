@@ -1,16 +1,23 @@
+/**
+ * Represents the final boss enemy.
+ * Handles spawning, animations, being hurt, dying, and triggering the game win state.
+ */
 class Endboss extends MovableObject {
   height = 550;
   width = 400;
-  y = -50;
   x = 3000;
+  y = -50;
   speed = 1.5;
   health = 3;
   hurt = false;
   dead = false;
-  world;
   hadFirstContact = false;
   spawningDone = false;
 
+  /** @type {World} Reference to the game world */
+  world;
+
+  /** Image arrays for different animations */
   IMAGES_SPAWNING = [
     "img/2.Enemy/3 Final Enemy/1.Introduce/1.png",
     "img/2.Enemy/3 Final Enemy/1.Introduce/2.png",
@@ -61,6 +68,8 @@ class Endboss extends MovableObject {
     "img/2.Enemy/3 Final Enemy/Attack/5.png",
     "img/2.Enemy/3 Final Enemy/Attack/6.png",
   ];
+
+  /** Collision offset for better hit detection */
   offset = {
     top: 250,
     bottom: 100,
@@ -68,9 +77,14 @@ class Endboss extends MovableObject {
     right: 20,
   };
 
+  /**
+   * Initializes the endboss and its animations.
+   * @param {World} world - Reference to the current game world.
+   */
   constructor(world) {
-    super().loadImage(this.IMAGES_SPAWNING[0]);
+    super();
     this.world = world;
+    this.loadImage(this.IMAGES_SPAWNING[0]); // ✅ Corrected
     this.loadImages(this.IMAGES_SPAWNING);
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
@@ -81,25 +95,36 @@ class Endboss extends MovableObject {
     this.startAnimationLoop();
   }
 
+  /**
+   * Starts the main loop to animate the boss.
+   */
   startAnimationLoop() {
-    this.animationInterval = intervals.push(
-      setInterval(() => {
-        if (!gameIsRunning) return;
-        if (this.world.character.x >= 2350 && !this.hadFirstContact) {
-          this.hadFirstContact = true;
-          this.startSpawning();}
-        if (this.spawningDone && !this.dead) {
-          this.playAnimation(
-            this.isHurt() ? this.IMAGES_HURT : this.IMAGES_WALKING
-          );}
-        if (this.dead) {
-          this.playAnimation(this.IMAGES_DEAD);
-          showGameWon();
-          this.winSound.currentTime = 0;
-          this.winSound.play();
-          this.dead = false;
-        }}, 150));}
+    this.animationInterval = intervals.push(setInterval(() => {
+      if (!gameIsRunning) return;
 
+      if (this.world.character.x >= 2350 && !this.hadFirstContact) {
+        this.hadFirstContact = true;
+        this.startSpawning();
+      }
+
+      if (this.spawningDone && !this.dead) {
+        const images = this.isHurt() ? this.IMAGES_HURT : this.IMAGES_WALKING;
+        this.playAnimation(images);
+      }
+
+      if (this.dead) {
+        this.playAnimation(this.IMAGES_DEAD);
+        showGameWon();
+        this.winSound.currentTime = 0;
+        this.winSound.play();
+        this.dead = false; // Prevent further animation
+      }
+    }, 150));
+  }
+
+  /**
+   * Starts the intro animation and begins movement.
+   */
   startSpawning() {
     let i = 0;
     const interval = setInterval(() => {
@@ -113,6 +138,9 @@ class Endboss extends MovableObject {
     }, 150);
   }
 
+  /**
+   * Reduces health on hit and handles death.
+   */
   takeHit() {
     if (this.dead || !this.spawningDone) return;
     this.health--;
@@ -125,15 +153,25 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Triggers hurt animation state for a short time.
+   */
   setHurt() {
     this.hurt = true;
     setTimeout(() => (this.hurt = false), 500);
   }
 
+  /**
+   * Returns whether the boss is in hurt state.
+   * @returns {boolean}
+   */
   isHurt() {
     return this.hurt;
   }
 
+  /**
+   * Handles the death of the boss and cleanup.
+   */
   die() {
     this.dead = true;
     this.speed = 0;
